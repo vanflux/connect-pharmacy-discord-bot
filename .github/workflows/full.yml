@@ -13,10 +13,6 @@ jobs:
         id: tagName
         with:
           tagRegex: "v(.*)"
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - name: Build image
         run: docker build --build-arg "VERSION=${{ steps.tagName.outputs.tag }}" -t vanflux/connect-pharmacy-discord-bot .
       - name: Transfer docker image over ssh
