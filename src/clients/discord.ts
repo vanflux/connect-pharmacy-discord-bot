@@ -12,21 +12,21 @@ export class Discord {
   public client!: Client;
 
   async initialize() {
-    await Promise.all([
-      this.initializeCommands(),
-      this.initializeClient(),
-    ]);
+    console.log('[Discord] Initializing');
+    await this.initializeClient();
+    this.initializeCommands(); // Runs completelly on background
+    console.log('[Discord] Initialized');
   }
 
   private async initializeCommands() {
     const { token, clientId } = getConfig();
     this.rest = new REST({ version: '10' }).setToken(token);
     try {
-      console.log('Started refreshing application (/) commands.');
+      console.log('[Discord] Started refreshing application (/) commands.');
       await this.rest.put(Routes.applicationCommands(clientId), { body: commands });
-      console.log('Successfully reloaded application (/) commands.');
+      console.log('[Discord] Successfully reloaded application (/) commands.');
     } catch (error) {
-      console.error(error);
+      console.error('[Discord] Commands error:', error);
     }
   }
 
@@ -44,7 +44,7 @@ export class Discord {
     ] });
 
     this.client.on('ready', () => {
-      console.log(`Logged in as ${this.client.user?.tag}!`);
+      console.log(`[Discord] Logged in as ${this.client.user?.tag}!`);
     });
 
     await this.client.login(token);

@@ -4,7 +4,8 @@
   "description": "A discord bot for connect pharmacy server",
   "scripts": {
     "start": "yarn dev",
-    "dev": "ts-node-dev --exit-child src/index.ts"
+    "dev": "ts-node-dev --exit-child src/index.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",

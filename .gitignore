@@ -1,5 +1,17 @@
+
+# Environment variables
 .env*
+
+# Modules
 node_modules
+
+# Output
+dist
+
+# Data
+data
+
+# Open WA (we are using socket... just for precaution)
 **.data.json
 **.node-persist**
 **_IGNORE_**

@@ -11,6 +11,7 @@ const messageFileTooBig = () => `Mensagem com arquivo muito grande ${tearsEmoji(
 
 export class WaDcBridgeFeature {
   async initialize() {
+    console.log('[WaDcBridgeFeature] Initializing');
     const { waChatId, discordWaDcBridgeId } = getConfig();
 
     discord.client.on('interactionCreate', async interaction => {
@@ -44,7 +45,7 @@ export class WaDcBridgeFeature {
       const fileFormat = message.mimetype && message.mimetype.includes('/') ? message.mimetype.split('/')[1].split(';')[0] : undefined;
       const fileExtension = message.mimetype ? extension(message.mimetype) : undefined;
       const hasFile = message.mimetype && fileFormat;
-      const fileDataUrlBase64 = hasFile ? await whatsapp.client.decryptMedia(message) : undefined;
+      const fileDataUrlBase64 = hasFile ? await whatsapp.client.decryptMedia(message.id) : undefined;
       const fileDataUrlBase64Index = hasFile ? fileDataUrlBase64!.indexOf(';base64,') + 8 : undefined;
       const fileBuffer = hasFile ? Buffer.from(fileDataUrlBase64!.substring(fileDataUrlBase64Index!), 'base64') : undefined;
       const fileSize = hasFile ? (fileBuffer ? fileBuffer.length : 0) : undefined;
@@ -104,6 +105,7 @@ export class WaDcBridgeFeature {
         }
       }
     });
+    console.log('[WaDcBridgeFeature] Initialized');
   }
 }
 

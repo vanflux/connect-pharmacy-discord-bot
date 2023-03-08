@@ -1,0 +1,14 @@
+version: '3.0'
+
+services:
+  owa:
+    image: openwa/wa-automate
+    command: --socket -p 8080
+    restart: on-failure
+    init: true
+    volumes:
+      - sessions:/sessions
+    network_mode: host
+
+volumes:
+  sessions:
