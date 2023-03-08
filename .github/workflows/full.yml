@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 16
       - name: Build image
-        run: docker build --build-arg "VERSION=${{ steps.tagName.outputs.tag }}" -t vanflux/connect-pharmacy-discord-bot
+        run: docker build --build-arg "VERSION=${{ steps.tagName.outputs.tag }}" -t vanflux/connect-pharmacy-discord-bot -
       - name: Transfer docker image over ssh
         run: |
               eval $(ssh-agent -s)
