@@ -12,14 +12,19 @@ const messageFileTooBig = () => `Mensagem com arquivo muito grande ${tearsEmoji(
 export class WaDcBridgeFeature {
   async initialize() {
     console.log('[WaDcBridgeFeature] Initializing');
-    const { waChatId, discordWaDcBridgeId } = getConfig();
+    const { waChatId, discordWaDcBridgeId, ownerId } = getConfig();
 
     discord.client.on('interactionCreate', async interaction => {
+      if (interaction.channelId !== discordWaDcBridgeId) return;
+      if (interaction.user.id !== ownerId) return;
+
       if (!interaction.isCommand()) return;
 
       switch (interaction.commandName) {
+
         case 'wa-clear':
-          await interaction.reply('Deleting the last messages, wait...');
+          await interaction.reply('Disabled temporarily');
+          /*await interaction.reply('Deleting the last messages, wait...');
           const channel = await discord.client.channels.fetch(discordWaDcBridgeId);
           const textChannel = channel as TextChannel;
           const messages = await textChannel.messages.fetch();
@@ -27,10 +32,12 @@ export class WaDcBridgeFeature {
             for (const message of messages.values()) {
               await message.delete();
             }
-          } catch (exc) {}
+          } catch (exc) {}*/
           break;
       }
     });
+
+    console.log(await (await whatsapp.client.getAllChats()).filter(x => x.formattedTitle?.includes('Connect')))
 
     whatsapp.on('message', async message => {
       if (message.chatId !== waChatId) return;
