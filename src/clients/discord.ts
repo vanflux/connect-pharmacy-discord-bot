@@ -19,7 +19,7 @@ export class Discord {
   }
 
   private async initializeCommands() {
-    const { token, clientId } = getConfig();
+    const { discord: { token, clientId } } = getConfig();
     this.rest = new REST({ version: '10' }).setToken(token);
     try {
       console.log('[Discord] Started refreshing application (/) commands.');
@@ -31,7 +31,7 @@ export class Discord {
   }
 
   private async initializeClient() {
-    const { token } = getConfig();
+    const { discord: { token } } = getConfig();
 
     this.client = new Client({ intents: [
       GatewayIntentBits.Guilds,
