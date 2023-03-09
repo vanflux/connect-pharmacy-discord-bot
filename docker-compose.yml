@@ -10,5 +10,28 @@ services:
       - sessions:/sessions
     network_mode: host
 
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: connectpharmacy
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - ./data/db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8082:80
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+
 volumes:
   sessions:

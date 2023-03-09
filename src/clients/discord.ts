@@ -4,7 +4,10 @@ import { getConfig } from "../config";
 const commands = [
   new SlashCommandBuilder()
     .setName('wa-clear')
-    .setDescription('Clear whatsapp bridge messages')
+    .setDescription('Clear whatsapp bridge messages'),
+  new SlashCommandBuilder()
+    .setName('voice-rank')
+    .setDescription('Show voice users rank'),
 ];
 
 export class Discord {
@@ -13,8 +16,8 @@ export class Discord {
 
   async initialize() {
     console.log('[Discord] Initializing');
-    await this.initializeClient();
     this.initializeCommands(); // Runs completelly on background
+    await this.initializeClient();
     console.log('[Discord] Initialized');
   }
 

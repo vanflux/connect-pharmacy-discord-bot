@@ -11,9 +11,14 @@ export class Whatsapp extends EventEmitter {
 
   async initialize() {
     console.log('[Whatsapp] Initializing');
-    const { whatsapp: { socket } } = getConfig();
-    this.client = await SocketClient.connect(socket) as unknown as Client;
-    this.client.onAnyMessage(async message => this.emit('message', message));
+    const { whatsapp: { socket, optional } } = getConfig();
+    try {
+      this.client = await SocketClient.connect(socket) as unknown as Client;
+      this.client.onAnyMessage(async message => this.emit('message', message));
+    } catch (error) {
+      console.log('[Whatsapp] Could not connect');
+      if (!optional) throw error;
+    }
     console.log('[Whatsapp] Initialized');
   }
 }
