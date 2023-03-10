@@ -70,9 +70,9 @@ export class VoiceRankFeature {
           embed.setDescription('cof cof farm :farmer:');
           embed.setColor('#3959DB');
           await Promise.all(usersRank.map(async ({ userId, total }, i) => {
-            const percentage = allPoints === 0 ? 0 : (Math.floor((total || 0) / allPoints * 10) * 10);
             const member = await guild.members.fetch(userId);
             const name = `${i+1}º ${member.displayName}${[' 🥇', ' 🥈', ' 🥉'][i] || ''}`
+            const percentage = this.calcPercentage(total, allPoints);
             const value = `${this.translateNumbersToEmojis(total)}  Pontos (${percentage}% do total)`;
             embed.addFields({
               name,
@@ -92,7 +92,7 @@ export class VoiceRankFeature {
           embed.setColor('#3959DB');
           const member = await guild.members.fetch(interaction.user.id);
           const name = member.displayName;
-          const percentage = allPoints === 0 ? 0 : (Math.floor(points / allPoints * 10) * 10);
+          const percentage = this.calcPercentage(points, allPoints);
           const value = `${this.translateNumbersToEmojis(points)} Pontos (${percentage}% do total)`;
           embed.addFields({
             name,
@@ -106,6 +106,12 @@ export class VoiceRankFeature {
     }));
 
     console.log('[VoiceRankFeature] Initialized');
+  }
+
+  private calcPercentage(value: number, max: number) {
+    if (value > max) value = max;
+    const percentage = max === 0 ? 0 : (Math.floor(value / max * 1000) / 10);
+    return percentage;
   }
 
   private translateNumbersToEmojis(num: number) {
