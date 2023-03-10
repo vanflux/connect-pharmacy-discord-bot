@@ -11,6 +11,12 @@ const commands = [
   new SlashCommandBuilder()
     .setName('voice-points')
     .setDescription('Mostra os seus pontos no voice'),
+  new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('Menu de ajuda'),
+  new SlashCommandBuilder()
+    .setName('version')
+    .setDescription('Versão do bot'),
 ];
 
 export class Discord {

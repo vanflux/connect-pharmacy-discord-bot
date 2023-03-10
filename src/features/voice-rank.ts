@@ -7,7 +7,7 @@ import { handleExceptions } from "../utils/handle-exceptions";
 export class VoiceRankFeature {
   async initialize() {
     console.log('[VoiceRankFeature] Initializing');
-    const { discord: { ownerId, guildId } } = getConfig();
+    const { discord: { guildId } } = getConfig();
     
     const guild = await discord.client.guilds.fetch(guildId);
     const channels = await guild.channels.fetch();
@@ -58,7 +58,7 @@ export class VoiceRankFeature {
     }));
 
     discord.client.on('interactionCreate', handleExceptions(async interaction => {
-      if (interaction.user.id !== ownerId) return;
+      if (interaction.guildId !== guildId) return;
       if (!interaction.isCommand()) return;
       switch (interaction.commandName) {
         case 'voice-rank': {

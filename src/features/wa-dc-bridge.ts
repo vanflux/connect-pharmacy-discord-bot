@@ -13,9 +13,10 @@ const messageFileTooBig = () => `Mensagem com arquivo muito grande ${tearsEmoji(
 export class WaDcBridgeFeature {
   async initialize() {
     console.log('[WaDcBridgeFeature] Initializing');
-    const { feature: { w2dBridge }, discord: { ownerId } } = getConfig();
+    const { feature: { w2dBridge }, discord: { ownerId, guildId } } = getConfig();
 
     discord.client.on('interactionCreate', handleExceptions(async interaction => {
+      if (interaction.guildId !== guildId) return;
       if (interaction.channelId !== w2dBridge.channelId) return;
       if (interaction.user.id !== ownerId) return;
 

@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { discord } from './clients/discord';
 import { whatsapp } from './clients/whatsapp';
 import { db } from './database/db';
+import { helpFeature } from './features/help';
 import { voiceRankFeature } from './features/voice-rank';
 import { waDcBridgeFeature } from './features/wa-dc-bridge';
 import { voiceRankService } from './services/voice-rank-service';
@@ -23,6 +24,7 @@ async function main() {
   console.log('[Main] Initializing features');
   await Promise.all([
     voiceRankService.initialize(),
+    helpFeature.initialize(),
     waDcBridgeFeature.initialize(),
     voiceRankFeature.initialize(),
   ]);
