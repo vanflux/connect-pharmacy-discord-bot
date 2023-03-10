@@ -11,7 +11,27 @@ export class VoiceRankFeature {
     
     const guild = await discord.client.guilds.fetch(guildId);
     const channels = await guild.channels.fetch();
-    console.log('channels', channels.filter(channel => channel?.isVoiceBased()).size);
+    const openActivities = await voiceRankService.getOpenActivities();
+    const toClose = [...openActivities];
+    await Promise.all(channels.map(async channel => {
+      if (!channel?.isVoiceBased()) return;
+      const channelId = channel.id;
+      await channel?.members.map(async member => {
+        const userId = member.id;
+        const index = toClose.findIndex(activity => activity.channelId === channelId && activity.userId === userId);
+        if (index >= 0) {
+          // The user is on channel and has open activity, do nothing
+          toClose.splice(index, 1);
+        } else {
+          // The user is on channel and don't have open activity, open one
+          await voiceRankService.openActivity(userId, channelId, new Date());
+        }
+      });
+    }));
+    // The user is not on channel and have open activity, close it
+    await Promise.all(
+      toClose.map(activity => voiceRankService.closeActivity(activity.id, activity.startTime))
+    );
 
     discord.client.on('voiceStateUpdate', handleExceptions(async (oldState, newState) => {
       if (oldState.guild.id !== guildId) return;
@@ -22,18 +42,18 @@ export class VoiceRankFeature {
       const userId = oldState.id;
 
       if (oldState.channelId) {
-        const voiceActivity = await voiceRankService.getNotEndedActivityOfUserOnChannel(userId, oldState.channelId);
-        if (voiceActivity) {
+        const activity = await voiceRankService.getOpenActivityOfUserOnChannel(userId, oldState.channelId);
+        if (activity) {
           const date = new Date();
           console.log('[VoiceRankFeature] User', userId, 'exit channel', oldState.channelId, date);
-          await voiceRankService.endActivity(voiceActivity.id, date);
+          await voiceRankService.closeActivity(activity.id, date);
         }
       }
 
       if (newState.channelId) {
         const date = new Date();
         console.log('[VoiceRankFeature] User', userId, 'enter channel', newState.channelId, date);
-        await voiceRankService.startActivity(userId, newState.channelId, date);
+        await voiceRankService.openActivity(userId, newState.channelId, date);
       }
     }));
 

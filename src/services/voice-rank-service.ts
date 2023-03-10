@@ -30,7 +30,7 @@ export class VoiceRankService {
     console.log('[VoiceRankService] Initialized');
   }
 
-  public async getNotEndedActivityOfUserOnChannel(userId: string, channelId: string) {
+  public async getOpenActivityOfUserOnChannel(userId: string, channelId: string) {
     const rows = await db.client
       .table(tableName)
       .select('id', 'user_id as userId', 'channel_id as channelId', 'start_time as startTime', 'end_time as endTime')
@@ -39,17 +39,25 @@ export class VoiceRankService {
       .whereNull('end_time')
       .orderBy('start_time', 'desc')
       .limit(1);
-    const voiceActivity = rows?.[0] as VoiceActivity | undefined;
-    return voiceActivity;
+    const activity = rows?.[0] as VoiceActivity | undefined;
+    return activity;
   }
 
-  public async startActivity(userId: string, channelId: string, startTime: Date) {
+  public async getOpenActivities() {
+    const rows = await db.client
+      .table(tableName)
+      .select<VoiceActivity[]>('id', 'user_id as userId', 'channel_id as channelId', 'start_time as startTime', 'end_time as endTime')
+      .whereNull('end_time');
+    return rows;
+  }
+
+  public async openActivity(userId: string, channelId: string, startTime: Date) {
     await db.client
       .table(tableName)
       .insert({ user_id: userId, channel_id: channelId, start_time: startTime });
   }
 
-  public async endActivity(id: number, endTime = new Date()) {
+  public async closeActivity(id: number, endTime = new Date()) {
     await db.client
       .table(tableName)
       .update({ end_time: endTime })
