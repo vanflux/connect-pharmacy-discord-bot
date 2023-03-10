@@ -26,6 +26,7 @@ if (!featureW2dBridgeWaChatId) throw new Error('FEATURE_W2D_BRIDGE_WA_CHAT_ID mu
 
 const whatsappSocket = process.env.WHATSAPP_SOCKET || 'http://localhost:8080';
 const whatsappOptional = process.env.WHATSAPP_OPTIONAL?.toLowerCase() === 'true';
+const version = process.env.VERSION;
 
 export function getConfig() {
   return {
@@ -51,5 +52,6 @@ export function getConfig() {
         waChatId: featureW2dBridgeWaChatId!,
       },
     },
+    version: version!,
   };
 }

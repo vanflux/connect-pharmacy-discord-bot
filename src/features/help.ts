@@ -6,7 +6,7 @@ import { handleExceptions } from "../utils/handle-exceptions";
 export class HelpFeature {
   async initialize() {
     console.log('[HelpFeature] Initializing');
-    const { discord: { guildId } } = getConfig();
+    const { version, discord: { guildId } } = getConfig();
     
     discord.client.on('interactionCreate', handleExceptions(async interaction => {
       if (interaction.guildId !== guildId) return;
@@ -43,7 +43,7 @@ export class HelpFeature {
           const embed = new EmbedBuilder();
           embed.setTitle('Versão do bot');
           embed.setColor('#3959DB');
-          embed.setDescription(`${process.env.VERSION || 'Dev (ops, não era bem isso)'}`);
+          embed.setDescription(`${version || 'Dev (ops, quem foi o otário que esqueceu de tirar isso)'}`);
           await interaction.reply({ embeds: [embed] });
           break;
         }

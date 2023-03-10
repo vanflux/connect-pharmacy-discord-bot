@@ -8,4 +8,6 @@ COPY src/ src/
 RUN yarn build
 ENV DATA_DIR=/data
 ENV NODE_ENV=production
+ARG VERSION
+ENV VERSION=$VERSION
 ENTRYPOINT ["node", "dist/index"]
