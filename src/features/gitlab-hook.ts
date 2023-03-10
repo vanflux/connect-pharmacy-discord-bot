@@ -1,7 +1,10 @@
+import { MessageCreateOptions, TextChannel } from "discord.js";
+import { discord } from "../clients/discord";
 import { getConfig } from "../config";
 import { http } from "../controllers/http";
+import { handleExceptions } from "../utils/handle-exceptions";
 
-const mockInputData = {
+const mockInputData: MessageCreateOptions = {
   content: "",
   username: null,
   avatar_url: null,
@@ -26,19 +29,31 @@ const mockInputData = {
       fields: []
     }
   ]
-}
+} as any;
 
 export class GitlabHookFeature {
   async initialize() {
     console.log('[GitlabHookFeature] Initializing');
     const { feature: {  } } = getConfig();
     
-    http.app.post('/hook', (req, res) => {
-      console.log('Req', req.body);
+    http.app.post('/hook', handleExceptions(async (req, res) => {
+      console.log('[GitlabHookFeature] Hook call:', req.body);
+      await this.send(req.body as MessageCreateOptions);
       res.status(200).send();
-    });
+    }));
+
+    //await this.send(mockInputData);
 
     console.log('[GitlabHookFeature] Initialized');
+  }
+
+  private async send(message: MessageCreateOptions) {
+    const { feature: { gitlabHook: { channelId } } } = getConfig();
+    const channel = await discord.client.channels.fetch(channelId);
+    if (channel?.isTextBased()) {
+      const textChannel = channel as TextChannel;
+      textChannel.send(message);
+    }
   }
 }
 

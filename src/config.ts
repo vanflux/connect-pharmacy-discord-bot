@@ -24,6 +24,9 @@ const featureW2dBridgeWaChatId = process.env.FEATURE_W2D_BRIDGE_WA_CHAT_ID;
 if (!featureW2dBridgeChannelId) throw new Error('FEATURE_W2D_BRIDGE_CHANNEL_ID must be provided!');
 if (!featureW2dBridgeWaChatId) throw new Error('FEATURE_W2D_BRIDGE_WA_CHAT_ID must be provided!');
 
+const featureGitlabHookChannelId = process.env.FEATURE_GITLAB_HOOK_CHANNEL_ID;
+if (!featureGitlabHookChannelId) throw new Error('FEATURE_GITLAB_HOOK_CHANNEL_ID must be provided!');
+
 const whatsappSocket = process.env.WHATSAPP_SOCKET || 'http://localhost:8080';
 const whatsappOptional = process.env.WHATSAPP_OPTIONAL?.toLowerCase() === 'true';
 const version = process.env.VERSION;
@@ -51,6 +54,9 @@ export function getConfig() {
         channelId: featureW2dBridgeChannelId!,
         waChatId: featureW2dBridgeWaChatId!,
       },
+      gitlabHook: {
+        channelId: featureGitlabHookChannelId!
+      }
     },
     version: version!,
   };
