@@ -67,6 +67,7 @@ export class VoiceRankFeature {
           console.log('[VoiceRankFeature] Voice users rank:', usersRank);
           const embed = new EmbedBuilder();
           embed.setTitle('Rank do Voice :loud_sound:');
+          embed.setDescription('cof cof farm :farmer:');
           embed.setColor('#3959DB');
           await Promise.all(usersRank.map(async ({ userId, total }, i) => {
             const percentage = allPoints === 0 ? 0 : (Math.floor((total || 0) / allPoints * 10) * 10);
