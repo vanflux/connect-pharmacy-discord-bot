@@ -56,15 +56,37 @@ export class VoiceRankService {
       .where('id', id);
   }
 
-  public async getUserRank() {
-    const usersRank = await db.client
+  public async getAllPoints() {
+    const rows = await db.client
       .table(tableName)
-      .select<VoiceActivityUserRankItem[]>('user_id as userId', db.client.raw('sum(timestampdiff(second, start_time, end_time)) as total'))
+      .select(db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
+      .from(tableName);
+    const points = rows?.[0]?.total;
+    if (points === undefined) return;
+    return Number(points);
+  }
+
+  public async getUserRank() {
+    const rows = await db.client
+      .table(tableName)
+      .select<VoiceActivityUserRankItem[]>('user_id as userId', db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
       .from(tableName)
       .groupBy('userId')
       .orderBy('total', 'desc')
       .limit(5);
-    return usersRank;
+    return rows.map(({ userId, total }) => ({ userId, total: Number(total) }));
+  }
+
+  public async getUserPoints(userId: string) {
+    const rows = await db.client
+      .table(tableName)
+      .select('user_id as userId', db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
+      .from(tableName)
+      .groupBy('userId')
+      .where('user_id', userId);
+    const points = rows?.[0]?.total;
+    if (points === undefined) return;
+    return Number(points);
   }
 }
 

@@ -4,10 +4,13 @@ import { getConfig } from "../config";
 const commands = [
   new SlashCommandBuilder()
     .setName('wa-clear')
-    .setDescription('Clear whatsapp bridge messages'),
+    .setDescription('Limpa as mensagens do canal de whatsapp'),
   new SlashCommandBuilder()
     .setName('voice-rank')
-    .setDescription('Show voice users rank'),
+    .setDescription('Mostra o rank dos users do voice'),
+  new SlashCommandBuilder()
+    .setName('voice-points')
+    .setDescription('Mostra os seus pontos no voice'),
 ];
 
 export class Discord {

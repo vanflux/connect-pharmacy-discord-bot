@@ -11,6 +11,7 @@ export class DB {
     this.client = knex({
       client: 'mysql2',
       connection: {
+        timezone: '+00:00',
         host,
         port,
         user,

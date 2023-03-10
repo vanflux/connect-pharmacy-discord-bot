@@ -4,6 +4,7 @@ import { discord } from "../clients/discord";
 import { whatsapp } from "../clients/whatsapp";
 import { getConfig } from "../config";
 import { extension } from "mime-types";
+import { handleExceptions } from "../utils/handle-exceptions";
 
 const tearsEmoji = () => ':smiling_face_with_tear:';
 const messageWithXSeeWhatsapp = (x: string) => `Mensagem com ${x} ${tearsEmoji()}, olhe o whatsapp`;
@@ -14,7 +15,7 @@ export class WaDcBridgeFeature {
     console.log('[WaDcBridgeFeature] Initializing');
     const { feature: { w2dBridge }, discord: { ownerId } } = getConfig();
 
-    discord.client.on('interactionCreate', async interaction => {
+    discord.client.on('interactionCreate', handleExceptions(async interaction => {
       if (interaction.channelId !== w2dBridge.channelId) return;
       if (interaction.user.id !== ownerId) return;
 
@@ -35,9 +36,9 @@ export class WaDcBridgeFeature {
           } catch (exc) {}*/
           break;
       }
-    });
+    }));
 
-    whatsapp.on('message', async message => {
+    whatsapp.on('message', handleExceptions(async message => {
       if (message.chatId !== w2dBridge.waChatId) return;
       if (!message.isGroupMsg) return;
 
@@ -109,7 +110,7 @@ export class WaDcBridgeFeature {
           break;
         }
       }
-    });
+    }));
     console.log('[WaDcBridgeFeature] Initialized');
   }
 }
