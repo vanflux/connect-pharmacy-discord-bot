@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "discord.js";
 import { discord } from "../clients/discord";
 import { getConfig } from "../config";
-import { voiceRankService } from "../services/voice-rank-service";
+import { voiceRankService } from "../services/voice-rank";
 import { handleExceptions } from "../utils/handle-exceptions";
 
 export class VoiceRankFeature {
