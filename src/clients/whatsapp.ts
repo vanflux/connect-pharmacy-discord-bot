@@ -28,11 +28,11 @@ export class Whatsapp extends EventEmitter {
     return new Promise<boolean>((resolve) => {
       try {
         if (this.connecting || this.connected) return resolve(false);
+        const socket = configService.get('whatsapp.socket');
+        if (!socket) return resolve(false);
         this.connecting = true;
         const id = Math.floor(Math.random() * 999999999);
         console.log('[Whatsapp] Trying to connect, id =', id);
-        const socket = configService.get('whatsapp.socket');
-        if (!socket) return resolve(false);
         const client = new SocketClient(socket) as SocketClient & Client;
         this.client = client;
         this.socket = client.socket;
