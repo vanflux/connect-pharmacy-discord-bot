@@ -65,6 +65,17 @@ const commands = [
       .setDescription('Testa o hook')
     ),
   new SlashCommandBuilder()
+    .setName('log')
+    .setDescription('Comandos de log do bot')
+    .addSubcommand(command => command
+      .setName('get-channel')
+      .setDescription('Mostra o canal de log')
+    )
+    .addSubcommand(command => command
+      .setName('set-channel')
+      .setDescription('Seta o canal de log')
+    ),
+  new SlashCommandBuilder()
     .setName('help')
     .setDescription('Não use isso'),
   new SlashCommandBuilder()

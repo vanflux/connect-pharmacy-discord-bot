@@ -1,4 +1,4 @@
-import { EmbedBuilder, Interaction, SlashCommandSubcommandBuilder } from "discord.js";
+import { EmbedBuilder, Interaction, SlashCommandSubcommandBuilder, TextChannel } from "discord.js";
 import { discord } from "../clients/discord";
 import { whatsapp } from "../clients/whatsapp";
 import { configService } from "../services/config";
@@ -20,6 +20,17 @@ export class GeneralFeature {
     if (!currentVersion?.length || version === currentVersion) return;
     await configService.set('version', currentVersion);
     console.log('[GeneralFeature] Bot version has changed from', version, 'to', currentVersion);
+    const channelId = configService.get('log.channelId');
+    if (!channelId) return;
+    try {
+      const channel = await discord.client.channels.fetch(channelId) as TextChannel | undefined;
+      if (!channel) return;
+      const embed = new EmbedBuilder();
+      embed.setTitle('Update do bot');
+      embed.setColor('#3959DB');
+      embed.setDescription(`Bot atualizado para a versão ${currentVersion || 'dev'} 🥳`);
+      await channel.send({ embeds: [embed], flags: 4096 });
+    } catch {}
   }
 
   private async onInteractionCreate(interaction: Interaction) {
@@ -98,6 +109,30 @@ export class GeneralFeature {
             } else {
               await interaction.editReply(`Não foi possível estabelecer um conexão com o socket, ${duration}ms`);
             }
+            break;
+          }
+        }
+      }
+      case 'log': {
+        const ownerId = configService.get('discord.ownerId');
+        if (interaction.user.id !== ownerId) return;
+        switch (interaction.options.getSubcommand()) {
+          case 'get-channel': {
+            const channelId = configService.get('log.channelId');
+            if (channelId) {
+              let channel: TextChannel | undefined = undefined;
+              try {
+                channel = await discord.client.channels.fetch(channelId) as TextChannel | undefined;
+              } catch {}
+              await interaction.reply(`O canal configurado é o ${channelId} (${channel?.name || '[Not found]'})`);
+            } else {
+              await interaction.reply('Nenhum canal está configurado');
+            }
+            break;
+          }
+          case 'set-channel': {
+            configService.set('log.channelId', interaction.channelId);
+            await interaction.reply('Novo canal configurado');
             break;
           }
         }

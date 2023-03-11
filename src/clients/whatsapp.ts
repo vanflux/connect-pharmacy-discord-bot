@@ -14,7 +14,8 @@ export class Whatsapp extends EventEmitter {
 
   async initialize() {
     console.log('[Whatsapp] Initializing');
-    await this.reload();
+    const isEnabled = process.env.WHATSAPP_DISABLED?.toLowerCase() !== 'true';
+    if (isEnabled) await this.reload();
     console.log('[Whatsapp] Initialized');
   }
 
