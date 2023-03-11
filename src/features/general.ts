@@ -1,4 +1,5 @@
 import { EmbedBuilder, Interaction, SlashCommandSubcommandBuilder, TextChannel } from "discord.js";
+import { getVersionChangeLog } from "../changelog";
 import { discord } from "../clients/discord";
 import { whatsapp } from "../clients/whatsapp";
 import { configService } from "../services/config";
@@ -25,10 +26,16 @@ export class GeneralFeature {
     try {
       const channel = await discord.client.channels.fetch(channelId) as TextChannel | undefined;
       if (!channel) return;
+
+      let description = `Bot atualizado para a versão ${currentVersion || 'dev'} 🥳\n\n`;
+      const changeLog = getVersionChangeLog(currentVersion);
+      for (const line of changeLog) description += `- ${line}\n`;
+
       const embed = new EmbedBuilder();
       embed.setTitle('Update do bot');
       embed.setColor('#3959DB');
-      embed.setDescription(`Bot atualizado para a versão ${currentVersion || 'dev'} 🥳`);
+      embed.setDescription(description);
+
       await channel.send({ embeds: [embed], flags: 4096 });
     } catch {}
   }
