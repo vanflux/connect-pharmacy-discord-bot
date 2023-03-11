@@ -1,12 +1,12 @@
 import { Knex, knex } from "knex";
-import { getConfig } from "../config";
+import { secretService } from "../services/secret";
 
 export class DB {
   public client!: Knex;
   
   public async initialize() {
     console.log('[Database] Initializing');
-    const { database: { host, pass: password, port, user } } = getConfig();
+    const { database: { host, pass: password, port, user } } = secretService.getSecrets();
 
     this.client = knex({
       client: 'mysql2',

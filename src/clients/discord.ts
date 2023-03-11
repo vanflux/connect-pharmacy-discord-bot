@@ -1,22 +1,75 @@
 import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } from "discord.js";
-import { getConfig } from "../config";
+import { secretService } from "../services/secret";
 
 const commands = [
   new SlashCommandBuilder()
-    .setName('wa-clear')
-    .setDescription('Limpa as mensagens do canal de whatsapp'),
+    .setName('wa')
+    .setDescription('Comandos do whatsapp')
+    .addSubcommand(command => command
+      .setName('get-socket')
+      .setDescription('Mostra o socket do server do whatsapp')
+    )
+    .addSubcommand(command => command
+      .setName('set-socket')
+      .setDescription('Seta o socket do server do whatsapp')
+      .addStringOption(option => option.setRequired(true).setName('socket').setDescription('Socket do server do whatsapp')),
+    )
+    .addSubcommand(command => command
+      .setName('reload')
+      .setDescription('Recarrega a conexão com o socket')
+    ),
   new SlashCommandBuilder()
-    .setName('voice-rank')
-    .setDescription('Mostra o rank dos users do voice'),
+    .setName('wa-bridge')
+    .setDescription('Comandos do espelhamento de whatsapp')
+    .addSubcommand(command => command
+      .setName('get-channel')
+      .setDescription('Mostra o canal que está espelhando as mensagens')
+    )
+    .addSubcommand(command => command
+      .setName('set-channel')
+      .setDescription('Seta o canal para espelhar as mensagens')
+    )
+    .addSubcommand(command => command
+      .setName('get-chat-id')
+      .setDescription('Mostra o chat que está espelhando as mensagens')
+    )
+    .addSubcommand(command => command
+      .setName('set-chat-id')
+      .setDescription('Seta o chat para espelhar as mensagens')
+      .addStringOption(option => option.setRequired(true).setName('chat-id').setDescription('Id do chat do whatsapp')),
+    ),
   new SlashCommandBuilder()
-    .setName('voice-points')
-    .setDescription('Mostra os seus pontos no voice'),
+    .setName('voice')
+    .setDescription('Comandos dos pontos do voice')
+    .addSubcommand(command => command
+      .setName('rank')
+      .setDescription('Mostra o rank dos users do voice')
+    )
+    .addSubcommand(command => command
+      .setName('points')
+      .setDescription('Mostra os seus pontos no voice')
+    ),
+  new SlashCommandBuilder()
+    .setName('gitlab-hook')
+    .setDescription('Comandos do hook do gitlab')
+    .addSubcommand(command => command
+      .setName('get-channel')
+      .setDescription('Mostra o canal que está recebendo notificações do gitlab')
+    )
+    .addSubcommand(command => command
+      .setName('set-channel')
+      .setDescription('Seta o canal para receber notificações do gitlab')
+    )
+    .addSubcommand(command => command
+      .setName('test')
+      .setDescription('Testa o hook')
+    ),
   new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Menu de ajuda'),
+    .setDescription('Não use isso'),
   new SlashCommandBuilder()
     .setName('version')
-    .setDescription('Versão do bot'),
+    .setDescription('Explode o server'),
 ];
 
 export class Discord {
@@ -31,7 +84,7 @@ export class Discord {
   }
 
   private async initializeCommands() {
-    const { discord: { token, clientId } } = getConfig();
+    const { discord: { token, clientId } } = secretService.getSecrets();
     this.rest = new REST({ version: '10' }).setToken(token);
     try {
       console.log('[Discord] Started refreshing application (/) commands.');
@@ -43,7 +96,7 @@ export class Discord {
   }
 
   private async initializeClient() {
-    const { discord: { token } } = getConfig();
+    const { discord: { token } } = secretService.getSecrets();
 
     this.client = new Client({ intents: [
       GatewayIntentBits.Guilds,
@@ -60,6 +113,10 @@ export class Discord {
     });
 
     await this.client.login(token);
+  }
+
+  public getCommands() {
+    return commands;
   }
 }
 

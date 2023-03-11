@@ -1,4 +1,5 @@
 import { db } from "../database/db";
+import { configService } from "./config";
 
 export interface VoiceActivity {
   id: number;

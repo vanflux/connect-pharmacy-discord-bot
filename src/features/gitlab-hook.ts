@@ -1,10 +1,10 @@
-import { MessageCreateOptions, TextChannel } from "discord.js";
+import { Interaction, MessageCreateOptions, TextChannel } from "discord.js";
 import { discord } from "../clients/discord";
-import { getConfig } from "../config";
 import { http } from "../controllers/http";
+import { configService } from "../services/config";
 import { handleExceptions } from "../utils/handle-exceptions";
 
-const mockInputData: MessageCreateOptions = {
+const testData: MessageCreateOptions = {
   content: "",
   username: null,
   avatar_url: null,
@@ -34,21 +34,58 @@ const mockInputData: MessageCreateOptions = {
 export class GitlabHookFeature {
   async initialize() {
     console.log('[GitlabHookFeature] Initializing');
-    const { feature: {  } } = getConfig();
-    
+
     http.app.post('/hook', handleExceptions(async (req, res) => {
       console.log('[GitlabHookFeature] Hook call:', req.body);
       await this.send(req.body as MessageCreateOptions);
       res.status(200).send();
     }));
 
+    discord.client.on('interactionCreate', handleExceptions(interaction => this.onInteractionCreate(interaction)));
+
     //await this.send(mockInputData);
 
     console.log('[GitlabHookFeature] Initialized');
   }
 
+  private async onInteractionCreate(interaction: Interaction) {
+    const guildId = configService.get('discord.guildId');
+    if (interaction.guildId !== guildId) return;
+    const ownerId = configService.get('discord.ownerId');
+    if (interaction.user.id !== ownerId) return;
+    if (!interaction.isChatInputCommand()) return;
+    if (interaction.commandName !== 'gitlab-hook') return;
+
+    switch (interaction.options.getSubcommand()) {
+      case 'get-channel': {
+        const channelId = configService.get('feature.gitlabHook.channelId');
+        if (channelId) {
+          let channel: TextChannel | undefined = undefined;
+          try {
+            channel = await discord.client.channels.fetch(channelId) as TextChannel | undefined;
+          } catch {}
+          await interaction.reply(`O canal configurado é o ${channelId} (${channel?.name || '[Not found]'})`);
+        } else {
+          await interaction.reply('Nenhum canal está configurado');
+        }
+        break;
+      }
+      case 'set-channel': {
+        configService.set('feature.gitlabHook.channelId', interaction.channelId);
+        await interaction.reply('Novo canal configurado');
+        break;
+      }
+      case 'test': {
+        await interaction.reply('Testando hook');
+        await this.send(testData);
+        break;
+      }
+    }
+  }
+
   private async send(message: MessageCreateOptions) {
-    const { feature: { gitlabHook: { channelId } } } = getConfig();
+    const channelId = configService.get('feature.gitlabHook.channelId');
+    if (!channelId) return;
     const channel = await discord.client.channels.fetch(channelId);
     if (channel?.isTextBased()) {
       const textChannel = channel as TextChannel;

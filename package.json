@@ -7,9 +7,9 @@
     "dev": "ts-node-dev --exit-child --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "up:db": "docker-compose up -d db phpmyadmin",
-    "down:db": "docker-compose stop -d db phpmyadmin",
+    "down:db": "docker-compose stop db phpmyadmin",
     "up:wa": "docker-compose up -d owa",
-    "down:wa": "docker-compose stop -d owa"
+    "down:wa": "docker-compose stop owa"
   },
   "repository": {
     "type": "git",
