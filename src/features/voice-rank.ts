@@ -86,7 +86,8 @@ export class VoiceRankFeature {
         embed.setTitle('Rank do Voice :loud_sound:');
         embed.setDescription('cof cof farm :farmer:');
         embed.setColor('#3959DB');
-        await Promise.all(usersRank.map(async ({ userId, total }, i) => {
+        for (let i = 0; i < usersRank.length; i++) {
+          const { userId, total } = usersRank[i];
           const member = await guild.members.fetch(userId);
           const name = `${i+1}º ${member.displayName}${[' 🥇', ' 🥈', ' 🥉'][i] || ''}`
           const percentage = this.calcPercentage(total, allPoints);
@@ -96,7 +97,7 @@ export class VoiceRankFeature {
             value,
             inline: false
           });
-        }));
+        }
         await interaction.reply({ embeds: [embed] });
         break;
       }
