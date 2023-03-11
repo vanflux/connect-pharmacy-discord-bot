@@ -9,6 +9,9 @@ const changeLog: { [version: string]: string[] } = {
   '2.3.1': [
     'Comando "/voice rank"',
     'Comando "/voice points"',
+  ],
+  '2.3.2': [
+    'Espelhamento das mensagens do whatsapp',
   ]
 }
 
