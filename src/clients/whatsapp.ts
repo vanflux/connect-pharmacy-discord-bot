@@ -8,8 +8,8 @@ export declare interface Whatsapp {
 
 export class Whatsapp extends EventEmitter {
   private socket: any;
-  private connecting = false;
-  private connected = false;
+  public connecting = false;
+  public connected = false;
   public client!: Client;
 
   async initialize() {

@@ -111,6 +111,11 @@ export class GeneralFeature {
             }
             break;
           }
+          case 'status': {
+            const status = whatsapp.connecting ? 'Conectando' : (whatsapp.connected ? 'Conectado' : 'Desconectado');
+            await interaction.reply(`Status da conexão: ${status}`);
+            break;
+          }
         }
       }
       case 'log': {

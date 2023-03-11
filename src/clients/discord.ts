@@ -17,6 +17,10 @@ const commands = [
     .addSubcommand(command => command
       .setName('reload')
       .setDescription('Recarrega a conexão com o socket')
+    )
+    .addSubcommand(command => command
+      .setName('status')
+      .setDescription('Status da conexão com o socket')
     ),
   new SlashCommandBuilder()
     .setName('wa-bridge')
