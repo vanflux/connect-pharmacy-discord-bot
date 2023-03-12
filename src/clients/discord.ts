@@ -69,6 +69,21 @@ const commands = [
       .setDescription('Testa o hook')
     ),
   new SlashCommandBuilder()
+    .setName('trello-hook')
+    .setDescription('Comandos do hook do trello')
+    .addSubcommand(command => command
+      .setName('get-channel')
+      .setDescription('Mostra o canal que está recebendo notificações do trello')
+    )
+    .addSubcommand(command => command
+      .setName('set-channel')
+      .setDescription('Seta o canal para receber notificações do trello')
+    )
+    .addSubcommand(command => command
+      .setName('test')
+      .setDescription('Testa o hook')
+    ),
+  new SlashCommandBuilder()
     .setName('log')
     .setDescription('Comandos de log do bot')
     .addSubcommand(command => command

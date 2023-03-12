@@ -9,6 +9,10 @@ export interface Secrets {
   discord: {
     clientId: string;
     token: string;
+  },
+  trello: {
+    apiKey: string;
+    apiToken: string;
   }
 }
 
@@ -24,6 +28,8 @@ export class SecretService {
     const databasePort = this.int(process.env.DATABASE_PORT!);
     const discordBotClientId = process.env.DISCORD_BOT_CLIENT_ID;
     const discordBotToken = process.env.DISCORD_BOT_TOKEN;
+    const trelloApiKey = process.env.TRELLO_API_KEY;
+    const trelloApiToken = process.env.TRELLO_API_TOKEN;
 
     if (!databaseUser) throw new Error('DATABASE_USER must be provided!');
     if (!databasePass) throw new Error('DATABASE_PASS must be provided!');
@@ -31,6 +37,8 @@ export class SecretService {
     if (!databasePort) throw new Error('DATABASE_PORT must be provided!');
     if (!discordBotClientId) throw new Error('DISCORD_BOT_CLIENT_ID must be provided!');
     if (!discordBotToken) throw new Error('DISCORD_BOT_TOKEN must be provided!');
+    if (!trelloApiKey) throw new Error('TRELLO_API_KEY must be provided!');
+    if (!trelloApiToken) throw new Error('TRELLO_API_TOKEN must be provided!');
 
     this.secrets = {
       database: {
@@ -43,6 +51,10 @@ export class SecretService {
         clientId: discordBotClientId!,
         token: discordBotToken!,
       },
+      trello: {
+        apiKey: trelloApiKey!,
+        apiToken: trelloApiToken!
+      }
     }
 
     console.log('[SecretService] Initialized');

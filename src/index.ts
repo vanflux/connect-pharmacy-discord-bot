@@ -10,6 +10,7 @@ import { waBridgeFeature } from './features/wa-bridge';
 import { configService } from './services/config';
 import { secretService } from './services/secret';
 import { voiceRankService } from './services/voice-rank';
+import { trelloHookFeature } from './features/trello-hook';
 
 // Handle some termination syscalls
 process.on('SIGTERM', () => process.exit());
@@ -33,6 +34,7 @@ async function main() {
     waBridgeFeature.initialize(),
     voiceRankFeature.initialize(),
     gitlabHookFeature.initialize(),
+    trelloHookFeature.initialize(),
   ]);
 
   console.log('[Main] Initialized');
