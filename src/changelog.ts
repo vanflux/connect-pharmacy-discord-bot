@@ -18,6 +18,12 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.4.1': [
     'Fix em hook do trello'
+  ],
+  '2.4.2': [
+    'Fix em hook do trello'
+  ],
+  '2.4.3': [
+    'Mensagens para criação, atualização(mover entre listas) e deleção de cards no trello'
   ]
 }
 

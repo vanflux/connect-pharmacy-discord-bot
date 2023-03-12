@@ -1,8 +1,98 @@
-import { Interaction, TextChannel } from "discord.js";
+import { EmbedBuilder, Interaction, MessageCreateOptions, TextChannel } from "discord.js";
 import { discord } from "../clients/discord";
 import { http } from "../controllers/http";
 import { configService } from "../services/config";
 import { handleExceptions } from "../utils/handle-exceptions";
+
+const testCreateCardData = {
+  model: {
+    url: 'https://trello.com/b/j2Vt2EvR/desenvolvimento',
+    shortUrl: 'https://trello.com/b/j2Vt2EvR',
+  },
+  action: {
+    id: '640de4e4a21e054bab824692',
+    idMemberCreator: '5f3e92a796e9e27898f1fd94',
+    data: {
+      card: {
+        id: '640de4e4a21e054bab824688',
+        name: '123',
+        idShort: 3,
+        shortLink: 'WYRJr0XN'
+      },
+      list: { id: '640cf6824b12a01410a65d46', name: 'TODO' },
+      board: {
+        id: '640cf6824b12a01410a65d3f',
+        name: 'Desenvolvimento',
+        shortLink: 'j2Vt2EvR'
+      }
+    },
+    type: 'createCard',
+    date: '2023-03-12T14:42:44.144Z',
+    memberCreator: {
+      fullName: 'Test User'
+    }
+  }
+};
+
+const testUpdateCardData = {
+  model: {
+    url: 'https://trello.com/b/j2Vt2EvR/desenvolvimento',
+    shortUrl: 'https://trello.com/b/j2Vt2EvR',
+  },
+  action: {
+    id: '640de4f77f1594f1a7a80118',
+    idMemberCreator: '5f3e92a796e9e27898f1fd94',
+    data: {
+      card: {
+        idList: '640cf6824b12a01410a65d47',
+        id: '640de4e4a21e054bab824688',
+        name: '123',
+        idShort: 3,
+        shortLink: 'WYRJr0XN'
+      },
+      old: { idList: '640cf6824b12a01410a65d46' },
+      board: {
+        id: '640cf6824b12a01410a65d3f',
+        name: 'Desenvolvimento',
+        shortLink: 'j2Vt2EvR'
+      },
+      listBefore: { id: '640cf6824b12a01410a65d46', name: 'TODO' },
+      listAfter: { id: '640cf6824b12a01410a65d47', name: 'Doing' }
+    },
+    type: 'updateCard',
+    date: '2023-03-12T14:43:03.663Z',
+    memberCreator: {
+      fullName: 'Test User'
+    }
+  }
+};
+
+const testDeleteCardData = {
+  model: {
+    url: 'https://trello.com/b/j2Vt2EvR/desenvolvimento',
+    shortUrl: 'https://trello.com/b/j2Vt2EvR'
+  },
+  action: {
+    data: {
+      card: {
+        id: '640de4e4a21e054bab824688',
+        idShort: 3,
+        shortLink: 'WYRJr0XN'
+      },
+      list: { id: '640cf6824b12a01410a65d48', name: 'Done' },
+      board: {
+        id: '640cf6824b12a01410a65d3f',
+        name: 'Desenvolvimento',
+        shortLink: 'j2Vt2EvR'
+      }
+    },
+    type: 'deleteCard',
+    date: '2023-03-12T14:43:12.078Z',
+    memberCreator: {
+      fullName: 'Test User'
+    }
+  }
+};
 
 export class TrelloHookFeature {
   async initialize() {
@@ -52,29 +142,69 @@ export class TrelloHookFeature {
         break;
       }
       case 'test': {
-        this.send({});
+        await interaction.reply('Testando hook');
+        const testDatas = [testCreateCardData, testUpdateCardData, testDeleteCardData];
+        const testData = testDatas[Math.floor(testDatas.length * Math.random())];
+        this.send(testData);
         break;
       }
     }
   }
 
-  private async send(message: any) {
+  private createMessage(data: any): MessageCreateOptions | undefined {
+    if (!data) return;
+    const action = data.action;
+    const model = data.model;
+    if (!action || !model) return;
+    const memberCreator = action.memberCreator;
+    const fullName = memberCreator.fullName || 'Unknown';
+    const avatarUrl = memberCreator.avatarUrl ? `${memberCreator.avatarUrl}/50.png` : 'https://www.gravatar.com/avatar/00000000000000000000000000000001?d=identicon&f=y';
+    const boardUrl = model.url;
+    const cardId = action.card?.id;
+    const cardUrl = `https://trello.com/c/${cardId}`;
+    const embed = new EmbedBuilder();
+    switch (action.type) {
+      case 'createCard': {
+        const cardName = action?.data?.card?.name || '';
+        const listName = action?.data.list?.name?.toUpperCase?.() || '';
+        if (!cardName || !listName) return;
+        embed.setDescription(`${fullName} **adicionou** o card [${cardName}](${cardUrl}) no [${listName}](${boardUrl}) no [board](${boardUrl})`);
+        break;
+      }
+      case 'updateCard': {
+        const cardName = action?.data?.card?.name || '';
+        const listBeforeName = action?.data.listBefore?.name?.toUpperCase?.() || '';
+        const listAfterName = action?.data.listAfter?.name?.toUpperCase?.() || '';
+        if (!listBeforeName || !listAfterName) return;
+        embed.setDescription(`${fullName} **moveu** o card [${cardName}](${cardUrl}) de [${listBeforeName}](${boardUrl}) para [${listAfterName}](${boardUrl}) no [board](${boardUrl})`);
+        break;
+      }
+      case 'deleteCard': {
+        const listName = action?.data.list?.name?.toUpperCase?.() || '';
+        if (!listName) return;
+        embed.setDescription(`${fullName} **deletou** um card do [${listName}](${boardUrl}) do [board](${boardUrl})`);
+        break;
+      }
+      default:
+        return;
+    }
+    embed.setTimestamp(new Date());
+    embed.setColor('#026AA7');
+    embed.setAuthor({
+      name: fullName,
+      iconURL: avatarUrl,
+    });
+    return { embeds: [embed] };
+  }
+
+  private async send(data: any) {
     const channelId = configService.get('feature.trelloHook.channelId');
     if (!channelId) return;
     const channel = await discord.client.channels.fetch(channelId);
     if (channel?.isTextBased()) {
       const textChannel = channel as TextChannel;
-      switch (message?.action?.type) {
-        case 'createCard':
-          console.log('[TrelloHookFeature] Card created! Action:', message.action);
-          break;
-        case 'updateCard':
-          console.log('[TrelloHookFeature] Card updated! Action:', message.action);
-          break;
-        case 'deleteCard':
-          console.log('[TrelloHookFeature] Card deleted! Action:', message.action);
-          break;
-      }
+      const message = this.createMessage(data);
+      if (message) textChannel.send(message);
     }
   }
 }

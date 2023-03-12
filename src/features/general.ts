@@ -28,7 +28,7 @@ export class GeneralFeature {
       if (!channel) return;
 
       let description = `Bot atualizado para a versão ${currentVersion || 'dev'} 🥳\n\n`;
-      const changeLog = getVersionChangeLog(currentVersion);
+      const changeLog = getVersionChangeLog(currentVersion) || [];
       for (const line of changeLog) description += `- ${line}\n`;
 
       const embed = new EmbedBuilder();
