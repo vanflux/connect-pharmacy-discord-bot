@@ -160,27 +160,27 @@ export class TrelloHookFeature {
     const fullName = memberCreator.fullName || 'Unknown';
     const avatarUrl = memberCreator.avatarUrl ? `${memberCreator.avatarUrl}/50.png` : 'https://www.gravatar.com/avatar/00000000000000000000000000000001?d=identicon&f=y';
     const boardUrl = model.url;
-    const cardId = action.card?.id;
+    
+    const cardId = action?.data.card?.id;
     const cardUrl = `https://trello.com/c/${cardId}`;
+    const cardName = action?.data?.card?.name || '';
+    const listName = action?.data.list?.name?.toUpperCase?.() || '';
+    const listBeforeName = action?.data.listBefore?.name?.toUpperCase?.() || '';
+    const listAfterName = action?.data.listAfter?.name?.toUpperCase?.() || '';
+    
     const embed = new EmbedBuilder();
     switch (action.type) {
       case 'createCard': {
-        const cardName = action?.data?.card?.name || '';
-        const listName = action?.data.list?.name?.toUpperCase?.() || '';
         if (!cardName || !listName) return;
         embed.setDescription(`${fullName} **adicionou** o card [${cardName}](${cardUrl}) no [${listName}](${boardUrl}) no [board](${boardUrl})`);
         break;
       }
       case 'updateCard': {
-        const cardName = action?.data?.card?.name || '';
-        const listBeforeName = action?.data.listBefore?.name?.toUpperCase?.() || '';
-        const listAfterName = action?.data.listAfter?.name?.toUpperCase?.() || '';
         if (!listBeforeName || !listAfterName) return;
         embed.setDescription(`${fullName} **moveu** o card [${cardName}](${cardUrl}) de [${listBeforeName}](${boardUrl}) para [${listAfterName}](${boardUrl}) no [board](${boardUrl})`);
         break;
       }
       case 'deleteCard': {
-        const listName = action?.data.list?.name?.toUpperCase?.() || '';
         if (!listName) return;
         embed.setDescription(`${fullName} **deletou** um card do [${listName}](${boardUrl}) do [board](${boardUrl})`);
         break;
