@@ -12,6 +12,12 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.3.2': [
     'Espelhamento das mensagens do whatsapp',
+  ],
+  '2.4.0': [
+    'Hook do trello adicionado'
+  ],
+  '2.4.1': [
+    'Fix em hook do trello'
   ]
 }
 

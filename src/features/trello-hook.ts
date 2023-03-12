@@ -8,8 +8,13 @@ export class TrelloHookFeature {
   async initialize() {
     console.log('[TrelloHookFeature] Initializing');
 
+    http.app.head('/trello/hook', handleExceptions(async (req, res) => {
+      console.log('[TrelloHookFeature] Hook head call:', req.body);
+      res.status(200).send();
+    }));
+
     http.app.post('/trello/hook', handleExceptions(async (req, res) => {
-      console.log('[TrelloHookFeature] Hook call:', req.body);
+      console.log('[TrelloHookFeature] Hook post call:', req.body);
       await this.send(req.body);
       res.status(200).send();
     }));

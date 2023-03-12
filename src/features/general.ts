@@ -37,7 +37,9 @@ export class GeneralFeature {
       embed.setDescription(description);
 
       await channel.send({ embeds: [embed], flags: 4096 });
-    } catch {}
+    } catch (error) {
+      console.log('[GeneralFeature] Failed to inform version:', error);
+    }
   }
 
   private async onInteractionCreate(interaction: Interaction) {
