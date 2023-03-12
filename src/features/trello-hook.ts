@@ -64,7 +64,17 @@ export class TrelloHookFeature {
     const channel = await discord.client.channels.fetch(channelId);
     if (channel?.isTextBased()) {
       const textChannel = channel as TextChannel;
-      textChannel.send('Test');
+      switch (message?.action?.type) {
+        case 'createCard':
+          console.log('[TrelloHookFeature] Card created! Action:', message.action);
+          break;
+        case 'updateCard':
+          console.log('[TrelloHookFeature] Card updated! Action:', message.action);
+          break;
+        case 'deleteCard':
+          console.log('[TrelloHookFeature] Card deleted! Action:', message.action);
+          break;
+      }
     }
   }
 }
