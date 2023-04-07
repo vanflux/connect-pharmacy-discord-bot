@@ -11,7 +11,7 @@ Você pode reaproveitar boa parte desse repositório caso queira usar apenas alg
 - Espelhamento de mensagens do whatsapp:
   - Essa funcionalidade replica as mensagens de um chat do whatsapp para um canal específico do Discord. Bom para ter um lugar central(discord) com todas informações reunidas.
 - Rank de usuários dos canais de voz:
-  - O bot grava o tempo que todos usuários ficam ativos nos canais de voz, é possível ver o rank de quem ficou por mais tempo usando o `/voice rank`
+  - O bot grava o tempo que todos usuários ficam ativos nos canais de voz, é possível ver o rank usando o comando `/voice rank`
 - Hook do Trello:
   - O bot avisa sobre alterações que ocorrem no Trello(cards criados, deletados, movidos, etc.). É bom porque geralmente **ninguém sabe que o Trello existe**... isso acaba inevitavelmente fazendo com que todo mundo perceba a existência dele e que COISAS estão acontecendo! Parece que o pessoal se mexe mais.
 - Hook do Gitlab:
