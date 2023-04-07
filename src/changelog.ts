@@ -30,6 +30,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.4.5': [
     'Refactor...'
+  ],
+  '2.5.0': [
+    'Mensagens piadas e pontadas no gitlab hook'
   ]
 }
 
