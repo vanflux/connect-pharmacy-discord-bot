@@ -27,6 +27,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.4.4': [
     'Fix em hook do trello'
+  ],
+  '2.4.5': [
+    'Refactor...'
   ]
 }
 

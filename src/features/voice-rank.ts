@@ -2,7 +2,9 @@ import { EmbedBuilder, Interaction, VoiceState } from "discord.js";
 import { discord } from "../clients/discord";
 import { configService } from "../services/config";
 import { voiceRankService } from "../services/voice-rank";
+import { calcPercentage } from "../utils/calc-percentage";
 import { handleExceptions } from "../utils/handle-exceptions";
+import { translateNumbersToEmojis } from "../utils/translate-numbers-to-emojis";
 
 export class VoiceRankFeature {
   async initialize() {
@@ -90,8 +92,8 @@ export class VoiceRankFeature {
           const { userId, total } = usersRank[i];
           const member = await guild.members.fetch(userId);
           const name = `${i+1}º ${member.displayName}${[' 🥇', ' 🥈', ' 🥉'][i] || ''}`
-          const percentage = this.calcPercentage(total, allPoints);
-          const value = `${this.translateNumbersToEmojis(total)}  Pontos (${percentage}% do total)`;
+          const percentage = calcPercentage(total, allPoints);
+          const value = `${translateNumbersToEmojis(total)}  Pontos (${percentage}% do total)`;
           embed.addFields({
             name,
             value,
@@ -110,8 +112,8 @@ export class VoiceRankFeature {
         embed.setColor('#3959DB');
         const member = await guild.members.fetch(interaction.user.id);
         const name = member.displayName;
-        const percentage = this.calcPercentage(points, allPoints);
-        const value = `${this.translateNumbersToEmojis(points)} Pontos (${percentage}% do total)`;
+        const percentage = calcPercentage(points, allPoints);
+        const value = `${translateNumbersToEmojis(points)} Pontos (${percentage}% do total)`;
         embed.addFields({
           name,
           value,
@@ -121,19 +123,6 @@ export class VoiceRankFeature {
         break;
       }
     }
-  }
-
-  private calcPercentage(value: number, max: number) {
-    if (value > max) value = max;
-    const percentage = max === 0 ? 0 : (Math.floor(value / max * 1000) / 10);
-    return percentage;
-  }
-
-  private translateNumbersToEmojis(num: number) {
-    return String(num).split('').map(char => [
-      ':zero:', ':one:', ':two:', ':three:', ':four:',
-      ':five:', ':six:', ':seven:', ':eight:', ':nine:'
-    ][char.charCodeAt(0) - '0'.charCodeAt(0)] || '').join('');
   }
 }
 
