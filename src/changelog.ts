@@ -36,6 +36,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.6.0': [
     'Rank do voice para mês e semana'
+  ],
+  '2.6.1': [
+    'Fix tosco em rank, ordenação...'
   ]
 }
 

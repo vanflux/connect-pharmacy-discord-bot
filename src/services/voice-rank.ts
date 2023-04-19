@@ -85,6 +85,7 @@ export class VoiceRankService {
       .select<VoiceActivityUserRankItem[]>('user_id as userId', db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
       .from(tableName)
       .groupBy('userId')
+      .orderBy('total', 'desc')
       .limit(5);
     if (startTime) {
       query = query.where('start_time', '>=', startTime?.toISOString());
