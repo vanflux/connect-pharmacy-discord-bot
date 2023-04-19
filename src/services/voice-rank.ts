@@ -65,24 +65,31 @@ export class VoiceRankService {
       .where('id', id);
   }
 
-  public async getAllPoints() {
-    const rows = await db.client
+  public async getAllPoints(startTime?: Date) {
+    let query = db.client
       .table(tableName)
       .select(db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
       .from(tableName);
+    if (startTime) {
+      query = query.where('start_time', '>=', startTime?.toISOString());
+    }
+    const rows = await query;
     const points = rows?.[0]?.total;
     if (points === undefined) return;
     return Number(points);
   }
 
-  public async getUserRank() {
-    const rows = await db.client
+  public async getUserRank(startTime?: Date) {
+    let query = db.client
       .table(tableName)
       .select<VoiceActivityUserRankItem[]>('user_id as userId', db.client.raw('sum(timestampdiff(second, start_time, coalesce(end_time, now()))) as total'))
       .from(tableName)
       .groupBy('userId')
-      .orderBy('total', 'desc')
       .limit(5);
+    if (startTime) {
+      query = query.where('start_time', '>=', startTime?.toISOString());
+    }
+    const rows = await query;
     return rows.map(({ userId, total }) => ({ userId, total: Number(total) }));
   }
 

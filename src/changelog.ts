@@ -33,6 +33,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.5.0': [
     'Mensagens piadas e pontadas no gitlab hook'
+  ],
+  '2.6.0': [
+    'Rank do voice para mês e semana'
   ]
 }
 

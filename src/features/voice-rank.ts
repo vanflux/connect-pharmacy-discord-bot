@@ -81,17 +81,35 @@ export class VoiceRankFeature {
     
     switch (interaction.options.getSubcommand()) {
       case 'rank': {
-        const usersRank = await voiceRankService.getUserRank();
-        const allPoints = await voiceRankService.getAllPoints() || 0;
+        let timeLabel = 'desde o início';
+        const type = interaction.options.getString('time') || 'all';
+        let startTime: Date | undefined = undefined;
+        switch(type) {
+          case 'week':
+            startTime = new Date();
+            startTime.setDate(startTime.getDate() - 7);
+            timeLabel = 'da última semana';
+            break;
+          case 'month':
+            startTime = new Date();
+            startTime.setMonth(startTime.getMonth() - 1);
+            timeLabel = 'do último mês';
+            break;
+        }
+        const usersRank = await voiceRankService.getUserRank(startTime);
+        const allPoints = await voiceRankService.getAllPoints(startTime) || 0;
         console.log('[VoiceRankFeature] Voice users rank:', usersRank);
         const embed = new EmbedBuilder();
-        embed.setTitle('Rank do Voice :loud_sound:');
+        embed.setTitle(`Rank do Voice ${timeLabel} :loud_sound:`);
         embed.setDescription('cof cof farm :farmer:');
         embed.setColor('#3959DB');
         for (let i = 0; i < usersRank.length; i++) {
           const { userId, total } = usersRank[i];
-          const member = await guild.members.fetch(userId);
-          const name = `${i+1}º ${member.displayName}${[' 🥇', ' 🥈', ' 🥉'][i] || ''}`
+          let member;
+          try {
+            member = await guild.members.fetch(userId);
+          } catch {}
+          const name = `${i+1}º ${member?.displayName || 'unknown'}${[' 🥇', ' 🥈', ' 🥉'][i] || ''}`
           const percentage = calcPercentage(total, allPoints);
           const value = `${translateNumbersToEmojis(total)}  Pontos (${percentage}% do total)`;
           embed.addFields({

@@ -48,6 +48,16 @@ const commands = [
     .addSubcommand(command => command
       .setName('rank')
       .setDescription('Mostra o rank dos users do voice')
+      .addStringOption(option => option
+        .setRequired(false)
+        .setChoices(
+          { name: 'Mês', value: 'month' },
+          { name: 'Semana', value: 'week' },
+          { name: 'Tudo', value: 'all' }
+        )
+        .setName('time')
+        .setDescription('Tempo')
+      )
     )
     .addSubcommand(command => command
       .setName('points')
