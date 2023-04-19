@@ -13,6 +13,9 @@ export interface Secrets {
   trello: {
     apiKey: string;
     apiToken: string;
+  },
+  gitlab: {
+    token: string;
   }
 }
 
@@ -30,6 +33,7 @@ export class SecretService {
     const discordBotToken = process.env.DISCORD_BOT_TOKEN;
     const trelloApiKey = process.env.TRELLO_API_KEY;
     const trelloApiToken = process.env.TRELLO_API_TOKEN;
+    const gitlabToken = process.env.GITLAB_TOKEN;
 
     if (!databaseUser) throw new Error('DATABASE_USER must be provided!');
     if (!databasePass) throw new Error('DATABASE_PASS must be provided!');
@@ -39,6 +43,7 @@ export class SecretService {
     if (!discordBotToken) throw new Error('DISCORD_BOT_TOKEN must be provided!');
     if (!trelloApiKey) throw new Error('TRELLO_API_KEY must be provided!');
     if (!trelloApiToken) throw new Error('TRELLO_API_TOKEN must be provided!');
+    if (!gitlabToken) throw new Error('GITLAB_TOKEN must be provided!');
 
     this.secrets = {
       database: {
@@ -54,6 +59,9 @@ export class SecretService {
       trello: {
         apiKey: trelloApiKey!,
         apiToken: trelloApiToken!
+      },
+      gitlab: {
+        token: gitlabToken!
       }
     }
 

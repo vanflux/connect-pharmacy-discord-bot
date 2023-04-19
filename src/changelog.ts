@@ -39,6 +39,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.6.1': [
     'Fix tosco em rank, ordenação...'
+  ],
+  '2.7.0': [
+    'Comando /mr-stats para status de merge requests'
   ]
 }
 

@@ -11,6 +11,8 @@ import { configService } from './services/config';
 import { secretService } from './services/secret';
 import { voiceRankService } from './services/voice-rank';
 import { trelloHookFeature } from './features/trello-hook';
+import { mrStatsFeature } from './features/mr-stats';
+import { gitlabFeature } from './features/gitlab';
 
 // Handle some termination syscalls
 process.on('SIGTERM', () => process.exit());
@@ -35,6 +37,8 @@ async function main() {
     voiceRankFeature.initialize(),
     gitlabHookFeature.initialize(),
     trelloHookFeature.initialize(),
+    mrStatsFeature.initialize(),
+    gitlabFeature.initialize(),
   ]);
 
   console.log('[Main] Initialized');

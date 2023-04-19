@@ -94,6 +94,21 @@ const commands = [
       .setDescription('Testa o hook')
     ),
   new SlashCommandBuilder()
+    .setName('gitlab')
+    .setDescription('Comandos do gitlab')
+    .addSubcommand(command => command
+      .setName('get-project-ids')
+      .setDescription('Mostra os ids dos projetos do gitlab')
+    )
+    .addSubcommand(command => command
+      .setName('set-project-ids')
+      .setDescription('Seta os ids dos projetos do gitlab')
+      .addStringOption(option => option.setRequired(true).setName('project-ids').setDescription('Ids dos projetos do gitlab')),
+    ),
+  new SlashCommandBuilder()
+    .setName('mr-stats')
+    .setDescription('Status dos merge requests'),
+  new SlashCommandBuilder()
     .setName('log')
     .setDescription('Comandos de log do bot')
     .addSubcommand(command => command
