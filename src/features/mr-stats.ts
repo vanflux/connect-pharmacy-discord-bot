@@ -52,7 +52,7 @@ export class MrStatsFeature {
         let description = '';
         for (const mr of mrStats.mergeRequests) {
           const canReview = !mr.hasConflicts && mr.blockingDiscussionResolved;
-          description += `> **[Merge request](${mr.url})** ${canReview ? '⭐ Revisem! ⭐' : `⛈ Arrume o MR ${mr.authorName} ⛈`}\n`;
+          description += `> **[Merge request](${mr.url})** ${canReview ? '⭐ AGES III e IV Revisem! ⭐' : `⛈ Arrume o MR ${mr.authorName} ⛈`}\n`;
           description += `**${mr.title}**\n`;
           description += `${mr.sourceBranch} -> ${mr.targetBranch} (${mr.authorName})\n`;
           if (mr.hasConflicts) description += `❌ Tem conflitos para resolver! ❌\n`;
