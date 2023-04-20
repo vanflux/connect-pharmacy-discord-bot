@@ -42,6 +42,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.7.0': [
     'Comando /mr-stats para status de merge requests'
+  ],
+  '2.7.1': [
+    'Mudança no texto do mr-stats'
   ]
 }
 
