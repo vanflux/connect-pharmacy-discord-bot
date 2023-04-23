@@ -29,6 +29,15 @@ export interface GitlabMergeRequestDto {
   blocking_discussions_resolved: boolean;
 }
 
+export interface GitlabProjectUserDto {
+  id: number;
+  username: string;
+  name: string;
+  state: string;
+  avatar_url: string;
+  web_url: string;
+}
+
 export class GitlabService {
   async getProjectIds() {
     const projectIdsString = await configService.get('gitlab.projectIds');
@@ -64,6 +73,22 @@ export class GitlabService {
     return new Promise<GitlabMergeRequestDto[] | undefined>(resolve => {
       request({
         url: `https://tools.ages.pucrs.br/api/v4/projects/${projectId}/merge_requests?state=opened`,
+        json: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }, (err, response, body) => {
+        if (err) return;
+        return resolve(body);
+      })
+    });
+  }
+
+  async getUsersByProjectId(projectId: number) {
+    const { gitlab: { token } } = secretService.getSecrets();
+    return new Promise<GitlabProjectUserDto[] | undefined>(resolve => {
+      request({
+        url: `https://tools.ages.pucrs.br/api/v4/projects/${projectId}/users`,
         json: true,
         headers: {
           Authorization: `Bearer ${token}`

@@ -45,7 +45,19 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.7.1': [
     'Mudança no texto do mr-stats'
-  ]
+  ],
+  '2.8.0': [
+    'Tabela de usuários finalmente adicionada!',
+    'Comando /task-stats para status de tasks',
+    'Comando /trello get-board-ids para pegar ids de boards do Trello',
+    'Comando /trello set-board-ids para setar os ids dos boards do Trello',
+    'Comando /user add para adicionar novos usuários',
+    'Comando /user delete para deletar usuário',
+    'Comando /user list para listar usuários',
+    'Comando /user edit para editar um usuário',
+    'Mencionando usuários em tasks do Trello e Gitlab',
+    'Discord.js atualizado para 14.8.0'
+  ],
 }
 
 export function getVersionChangeLog(version: string) {

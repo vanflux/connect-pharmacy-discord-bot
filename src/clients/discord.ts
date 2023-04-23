@@ -106,8 +106,46 @@ const commands = [
       .addStringOption(option => option.setRequired(true).setName('project-ids').setDescription('Ids dos projetos do gitlab')),
     ),
   new SlashCommandBuilder()
+    .setName('trello')
+    .setDescription('Comandos do trello')
+    .addSubcommand(command => command
+      .setName('get-board-ids')
+      .setDescription('Mostra os ids das boards do trello')
+    )
+    .addSubcommand(command => command
+      .setName('set-board-ids')
+      .setDescription('Seta os ids das boards do trello')
+      .addStringOption(option => option.setRequired(true).setName('board-ids').setDescription('Ids das boards do trello')),
+    ),
+  new SlashCommandBuilder()
     .setName('mr-stats')
     .setDescription('Status dos merge requests'),
+  new SlashCommandBuilder()
+    .setName('task-stats')
+    .setDescription('Status das tasks'),
+  new SlashCommandBuilder()
+    .setName('user')
+    .setDescription('Comandos de usuário')
+    .addSubcommand(command => command
+      .setName('add')
+      .setDescription('Adiciona um usuário')
+      .addStringOption(option => option.setRequired(true).setName('name').setDescription('Nome do usuário'))
+      .addNumberOption(option => option.setRequired(true).setName('ages-level').setDescription('Nível da Ages do usuário')),
+    )
+    .addSubcommand(command => command
+      .setName('delete')
+      .setDescription('Deleta um usuário')
+      .addNumberOption(option => option.setRequired(true).setName('id').setDescription('Id do usuário'))
+    )
+    .addSubcommand(command => command
+      .setName('list')
+      .setDescription('Lista os usuários')
+    )
+    .addSubcommand(command => command
+      .setName('edit')
+      .setDescription('Edita um usuário')
+      .addNumberOption(option => option.setRequired(true).setName('id').setDescription('Id do usuário'))
+    ),
   new SlashCommandBuilder()
     .setName('log')
     .setDescription('Comandos de log do bot')

@@ -2,7 +2,7 @@
 
 ## O que é
 
-Este projeto é um bot de discord desenvolvido para projetos da AGES, mais especificamente para a Connect Pharmacy.
+Este projeto é um bot de discord desenvolvido para projetos da Ages, mais especificamente para a Connect Pharmacy.
 
 Você pode reaproveitar boa parte desse repositório caso queira usar apenas algumas funcionalidades.
 

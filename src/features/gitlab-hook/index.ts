@@ -161,7 +161,7 @@ export class GitlabHookFeature {
                 `- Nome: [${parsed.mrName}](${parsed.mrUrl})\n` +
                 `- Projeto: [${parsed.projectName?.split('/')?.pop()?.trim()}](${parsed.projectUrl})\n` +
                 `\n` +
-                `Isso mesmo AGES III e AGES IV!!!\n` +
+                `Isso mesmo Ages III e Ages IV!!!\n` +
                 `Larguem o CHEETOS imediatamente e vão revisar!!!\n`
               ),
           ],

@@ -13,6 +13,10 @@ import { voiceRankService } from './services/voice-rank';
 import { trelloHookFeature } from './features/trello-hook';
 import { mrStatsFeature } from './features/mr-stats';
 import { gitlabFeature } from './features/gitlab';
+import { taskStatsFeature } from './features/task-stats';
+import { trelloFeature } from './features/trello';
+import { userService } from './services/user';
+import { usersFeature } from './features/users';
 
 // Handle some termination syscalls
 process.on('SIGTERM', () => process.exit());
@@ -35,10 +39,14 @@ async function main() {
     generalFeature.initialize(),
     waBridgeFeature.initialize(),
     voiceRankFeature.initialize(),
+    userService.initialize(),
     gitlabHookFeature.initialize(),
     trelloHookFeature.initialize(),
     mrStatsFeature.initialize(),
     gitlabFeature.initialize(),
+    taskStatsFeature.initialize(),
+    trelloFeature.initialize(),
+    usersFeature.initialize(),
   ]);
 
   console.log('[Main] Initialized');

@@ -2,6 +2,7 @@ import { EmbedBuilder, Interaction, TextChannel } from "discord.js";
 import { discord } from "../clients/discord";
 import { configService } from "../services/config";
 import { gitlabService } from "../services/gitlab";
+import { userService } from "../services/user";
 import { handleExceptions } from "../utils/handle-exceptions";
 
 export class MrStatsFeature {
@@ -25,20 +26,24 @@ export class MrStatsFeature {
         const mrs = await gitlabService.getOpenMrsByProjectId(projectId);
         if (!project) throw new Error('Cannot get project ' + projectId);
         if (!mrs) throw new Error('Cannot get merge requests of ' + projectId);
-        console.log(mrs)
         return {
           projectName: project.name,
-          mergeRequests: mrs
+          mergeRequests: await Promise.all(mrs
             .filter(mr => !mr.draft && !mr.work_in_progress && !mr.title.match(/\bwip\b/i))
-            .map(mr => ({
-              authorName: mr.author.name,
-              hasConflicts: mr.has_conflicts,
-              blockingDiscussionResolved: mr.blocking_discussions_resolved,
-              sourceBranch: mr.source_branch,
-              targetBranch: mr.target_branch,
-              title: mr.title,
-              url: mr.web_url,
-            }))
+            .map(async mr => {
+              const user = await userService.getUserByGitlabUsername(mr.author.username)
+              return {
+                user,
+                authorName: mr.author.name,
+                hasConflicts: mr.has_conflicts,
+                blockingDiscussionResolved: mr.blocking_discussions_resolved,
+                sourceBranch: mr.source_branch,
+                targetBranch: mr.target_branch,
+                title: mr.title,
+                url: mr.web_url,
+              }
+            })
+          )
         };
       }));
       console.log('[MrStatsFeature] Stats of merge requests', mrsStats);
@@ -51,10 +56,11 @@ export class MrStatsFeature {
         embed.setColor('#3959DB');
         let description = '';
         for (const mr of mrStats.mergeRequests) {
+          const userMention = mr.user?.discordUserId ? `<@${mr.user.discordUserId}>` : mr.authorName;
           const canReview = !mr.hasConflicts && mr.blockingDiscussionResolved;
-          description += `> **[Merge request](${mr.url})** ${canReview ? '⭐ AGES III e IV Revisem! ⭐' : `⛈ Arrume o MR ${mr.authorName} ⛈`}\n`;
+          description += `> **[Merge request](${mr.url})** ${canReview ? '⭐ Ages III e IV Revisem! ⭐' : `⛈ Arrume o MR ${userMention} ⛈`}\n`;
           description += `**${mr.title}**\n`;
-          description += `${mr.sourceBranch} -> ${mr.targetBranch} (${mr.authorName})\n`;
+          description += `${mr.sourceBranch} -> ${mr.targetBranch} (${userMention})\n`;
           if (mr.hasConflicts) description += `❌ Tem conflitos para resolver! ❌\n`;
           if (!mr.blockingDiscussionResolved) description += `❌ Tem comentários para resolver! ❌\n`;
           description += `\n`;
