@@ -14,6 +14,16 @@ export type CreateUserDto = Omit<User, 'id'>;
 
 export type UpdateUserDto = Partial<CreateUserDto>;
 
+const allColumns = [
+  'id',
+  'discord_user_id as discordUserId',
+  'trello_member_id as trelloMemberId',
+  'gitlab_user_id as gitlabUserId',
+  'gitlab_username as gitlabUsername',
+  'name',
+  'ages_level as agesLevel',
+];
+
 const tableName = 'users';
 
 export class UserService {
@@ -33,17 +43,21 @@ export class UserService {
     console.log('[UserService] Initialized');
   }
 
+  private convertUserToDbObj(user: Partial<User>) {
+    return {
+      discord_user_id: user.discordUserId,
+      trello_member_id: user.trelloMemberId,
+      gitlab_user_id: user.gitlabUserId,
+      gitlab_username: user.gitlabUsername,
+      name: user.name,
+      ages_level: user.agesLevel,
+    };
+  }
+
   public async create(createUserDto: CreateUserDto) {
     const rows = await db.client
       .table(tableName)
-      .insert({
-        discord_user_id: createUserDto.discordUserId,
-        trello_member_id: createUserDto.trelloMemberId,
-        gitlab_user_id: createUserDto.gitlabUserId,
-        gitlab_username: createUserDto.gitlabUsername,
-        name: createUserDto.name,
-        ages_level: createUserDto.agesLevel,
-      });
+      .insert(this.convertUserToDbObj(createUserDto));
     const id = rows[0];
     return id;
   }
@@ -51,44 +65,22 @@ export class UserService {
   public async update(id: number, updateUserDto: UpdateUserDto) {
     await db.client
       .table(tableName)
-      .update({
-        discord_user_id: updateUserDto.discordUserId,
-        trello_member_id: updateUserDto.trelloMemberId,
-        gitlab_user_id: updateUserDto.gitlabUserId,
-        gitlab_username: updateUserDto.gitlabUsername,
-        name: updateUserDto.name,
-        ages_level: updateUserDto.agesLevel,
-      })
+      .update(this.convertUserToDbObj(updateUserDto))
       .where('id', id);
   }
 
   public async getAll(): Promise<User[]> {
     const rows = await db.client
       .table(tableName)
-      .select<User[]>(
-        'id',
-        'discord_user_id as discordUserId',
-        'trello_member_id as trelloMemberId',
-        'gitlab_user_id as gitlabUserId',
-        'gitlab_username as gitlabUsername',
-        'name',
-        'ages_level as agesLevel'
-      );
+      .select()
+      .select<User[]>(allColumns);
     return rows;
   }
 
   public async getById(id: number): Promise<User | undefined> {
     const rows = await db.client
       .table(tableName)
-      .select<User[]>(
-        'id',
-        'discord_user_id as discordUserId',
-        'trello_member_id as trelloMemberId',
-        'gitlab_user_id as gitlabUserId',
-        'gitlab_username as gitlabUsername',
-        'name',
-        'ages_level as agesLevel'
-      )
+      .select<User[]>(allColumns)
       .where('id', id)
       .limit(1);
     return rows?.[0];
@@ -104,15 +96,7 @@ export class UserService {
   public async getUserByGitlabUsername(gitlabUsername: string): Promise<User | undefined> {
     const rows = await db.client
       .table(tableName)
-      .select<User[]>(
-        'id',
-        'discord_user_id as discordUserId',
-        'trello_member_id as trelloMemberId',
-        'gitlab_user_id as gitlabUserId',
-        'gitlab_username as gitlabUsername',
-        'name',
-        'ages_level as agesLevel'
-      )
+      .select<User[]>(allColumns)
       .where('gitlab_username', gitlabUsername)
       .limit(1);
     return rows?.[0];
@@ -121,15 +105,7 @@ export class UserService {
   public async getUserByTrelloMemberId(trelloMemberId: string): Promise<User | undefined> {
     const rows = await db.client
       .table(tableName)
-      .select<User[]>(
-        'id',
-        'discord_user_id as discordUserId',
-        'trello_member_id as trelloMemberId',
-        'gitlab_user_id as gitlabUserId',
-        'gitlab_username as gitlabUsername',
-        'name',
-        'ages_level as agesLevel'
-      )
+      .select<User[]>(allColumns)
       .where('trello_member_id', trelloMemberId)
       .limit(1);
     return rows?.[0];

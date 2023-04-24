@@ -14,6 +14,14 @@ export interface VoiceActivityUserRankItem {
   total: number;
 }
 
+const allColumns = [
+  'id',
+  'user_id as userId',
+  'channel_id as channelId',
+  'start_time as startTime',
+  'end_time as endTime',
+];
+
 const tableName = 'voice_activity';
 
 export class VoiceRankService {
@@ -34,7 +42,7 @@ export class VoiceRankService {
   public async getOpenActivityOfUserOnChannel(userId: string, channelId: string) {
     const rows = await db.client
       .table(tableName)
-      .select('id', 'user_id as userId', 'channel_id as channelId', 'start_time as startTime', 'end_time as endTime')
+      .select(allColumns)
       .where('user_id', userId)
       .where('channel_id', channelId)
       .whereNull('end_time')
@@ -47,7 +55,7 @@ export class VoiceRankService {
   public async getOpenActivities() {
     const rows = await db.client
       .table(tableName)
-      .select<VoiceActivity[]>('id', 'user_id as userId', 'channel_id as channelId', 'start_time as startTime', 'end_time as endTime')
+      .select<VoiceActivity[]>(allColumns)
       .whereNull('end_time');
     return rows;
   }
