@@ -16,6 +16,12 @@ Você pode reaproveitar boa parte desse repositório caso queira usar apenas alg
   - O bot avisa sobre alterações que ocorrem no Trello(cards criados, deletados, movidos, etc.). É bom porque geralmente **ninguém sabe que o Trello existe**... isso acaba inevitavelmente fazendo com que todo mundo perceba a existência dele e que COISAS estão acontecendo! Parece que o pessoal se mexe mais.
 - Hook do Gitlab:
   - O Gitlab já possui um webhook para mandar mensagens no Discord, porém com o bot é possível customizar as mensagens e deixar elas mais **interessantes** se é que me entende...
+- Status de Merge Requests do Gitlab:
+  - É possível utilizar o comando `/mr-stats` para que o bot extraia informações de todos os merge requests abertos(e que **não são WIPs**) e faça um resumo de todos com o que falta ser feito, exemplo: conflitos e comentários para resolver.
+- Status das Tasks do Trello:
+  - É possível utilizar o comando `/task-stats` para que o bot extraia informações dos cards do Trello e faça um resumo de todos.
+- Interligação entre usuários do Discord + Gitlab + Trello:
+  - Um usuário possui todas essas informações, sendo possível detectar e mencionar usuários no Discord baseado nos membros dos boards do Trello.
 
 ## Extra
 
