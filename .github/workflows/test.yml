@@ -1,0 +1,23 @@
+name: Full
+on:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: olegtarasov/get-tag@v2.1.2
+        id: tagName
+        with:
+          tagRegex: "v(.*)"
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          build-args:
+            - VERSION=${{ steps.tagName.outputs.tag }}
+          tags: "vanflux/connect-pharmacy-discord-bot:latest"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
