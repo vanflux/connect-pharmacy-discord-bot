@@ -1,4 +1,4 @@
-name: Full
+name: Full2
 on:
   push:
 jobs:
