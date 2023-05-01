@@ -58,6 +58,9 @@ const changeLog: { [version: string]: string[] } = {
     'Mencionando usuários em tasks do Trello e Gitlab',
     'Discord.js atualizado para 14.8.0'
   ],
+  '2.8.3': [
+    'Build insano de rapido'
+  ]
 }
 
 export function getVersionChangeLog(version: string) {
