@@ -25,6 +25,6 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ steps.tagName.outputs.tag }}
-          tags: "vanflux/connect-pharmacy-discord-bot:latest"
+          tags: "vanflux/connect-pharmacy-discord-bot:latest,vanflux/connect-pharmacy-discord-bot:${{ steps.tagName.outputs.tag }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
