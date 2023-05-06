@@ -72,7 +72,6 @@ export class UserService {
   public async getAll(): Promise<User[]> {
     const rows = await db.client
       .table(tableName)
-      .select()
       .select<User[]>(allColumns);
     return rows;
   }

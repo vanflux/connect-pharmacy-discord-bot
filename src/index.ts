@@ -9,7 +9,7 @@ import { voiceRankFeature } from './features/voice-rank';
 import { waBridgeFeature } from './features/wa-bridge';
 import { configService } from './services/config';
 import { secretService } from './services/secret';
-import { voiceRankService } from './services/voice-rank';
+import { voiceActivityService } from './services/voice-activity';
 import { trelloHookFeature } from './features/trello-hook';
 import { mrStatsFeature } from './features/mr-stats';
 import { gitlabFeature } from './features/gitlab';
@@ -17,6 +17,7 @@ import { taskStatsFeature } from './features/task-stats';
 import { trelloFeature } from './features/trello';
 import { userService } from './services/user';
 import { usersFeature } from './features/users';
+import { sprintService } from './services/sprint';
 
 // Handle some termination syscalls
 process.on('SIGTERM', () => process.exit());
@@ -34,7 +35,10 @@ async function main() {
     whatsapp.initialize(),
     http.initialize(),
   ]);
-  await voiceRankService.initialize();
+  await Promise.all([
+    sprintService.initialize(),
+    voiceActivityService.initialize(),
+  ]);
   await Promise.all([
     generalFeature.initialize(),
     waBridgeFeature.initialize(),

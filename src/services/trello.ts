@@ -2,7 +2,7 @@ import request from "request";
 import { configService } from "./config";
 import { secretService } from "./secret";
 
-export interface TrelloCardDto {
+export interface TrelloPartialCardDto {
   id: string;
   dateLastActivity: string;
   desc: string;
@@ -27,6 +27,21 @@ export interface TrelloCardDto {
   isTemplate: boolean;
 }
 
+export interface TrelloActionDto {
+  id: string;
+  idMemberCreator: string;
+  data: any;
+  type: string;
+  date: string;
+  limits: null,
+  member: TrelloMemberDto;
+  memberCreator: TrelloMemberDto;
+}
+
+export interface TrelloCardDto extends TrelloPartialCardDto {
+  actions: TrelloActionDto[];
+}
+
 export interface TrelloListDto {
   id: string;
   name: string;
@@ -41,17 +56,19 @@ export interface TrelloMembershipDto {
   unconfirmed: boolean;
   deactivated: boolean;
   id: string;
-  member: {
-    id: string;
-    activityBlocked: boolean;
-    avatarHash: string;
-    avatarUrl: string;
-    fullName: string;
-    idMemberReferrer: string;
-    initials: string;
-    nonPublicAvailable: boolean;
-    username: string;
-  }
+  member: TrelloMemberDto;
+}
+
+export interface TrelloMemberDto {
+  id: string;
+  activityBlocked: boolean;
+  avatarHash: string;
+  avatarUrl: string;
+  fullName: string;
+  idMemberReferrer: string;
+  initials: string;
+  nonPublicAvailable: boolean;
+  username: string;
 }
 
 export class TrelloService {
@@ -77,9 +94,22 @@ export class TrelloService {
     });
   }
 
+  async getCard(cardId: string) {
+    const { trello: { apiKey, apiToken } } = secretService.getSecrets();
+    return new Promise<TrelloCardDto | undefined>(resolve => {
+      request({
+        url: `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${apiToken}&actions=addMemberToCard,removeMemberFromCard`,
+        json: true
+      }, (err, response, body) => {
+        if (err) return;
+        return resolve(body);
+      })
+    });
+  }
+
   async getCards(boardId: string) {
     const { trello: { apiKey, apiToken } } = secretService.getSecrets();
-    return new Promise<TrelloCardDto[] | undefined>(resolve => {
+    return new Promise<TrelloPartialCardDto[] | undefined>(resolve => {
       request({
         url: `https://api.trello.com/1/boards/${boardId}/cards?key=${apiKey}&token=${apiToken}`,
         json: true

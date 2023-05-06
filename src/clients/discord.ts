@@ -62,6 +62,15 @@ const commands = [
     .addSubcommand(command => command
       .setName('points')
       .setDescription('Mostra os seus pontos no voice')
+    )
+    .addSubcommand(command => command
+      .setName('stats')
+      .setDescription('Mostra o status do voice para a sprint')
+      .addNumberOption(option => option
+        .setRequired(true)
+        .setName('sprint')
+        .setDescription('Número da sprint')
+      )
     ),
   new SlashCommandBuilder()
     .setName('gitlab-hook')

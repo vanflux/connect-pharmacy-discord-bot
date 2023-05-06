@@ -1,5 +1,4 @@
 import { db } from "../database/db";
-import { configService } from "./config";
 
 export interface VoiceActivity {
   id: number;
@@ -24,9 +23,9 @@ const allColumns = [
 
 const tableName = 'voice_activity';
 
-export class VoiceRankService {
+export class VoiceActivityService {
   public async initialize() {
-    console.log('[VoiceRankService] Initializing');
+    console.log('[VoiceActivityService] Initializing');
     if (!await db.client.schema.hasTable(tableName)) {
       await db.client.schema.createTable(tableName, table => {
         table.increments('id');
@@ -36,7 +35,15 @@ export class VoiceRankService {
         table.dateTime('end_time');
       });
     }
-    console.log('[VoiceRankService] Initialized');
+    console.log('[VoiceActivityService] Initialized');
+  }
+
+  public async getActivitiesBetween(startTime: Date, endTime: Date) {
+    return await db.client
+      .select<VoiceActivity[]>(allColumns)
+      .from(tableName)
+      .where('start_time', '>=', startTime.toISOString())
+      .where('end_time', '<=', endTime.toISOString())
   }
 
   public async getOpenActivityOfUserOnChannel(userId: string, channelId: string) {
@@ -115,4 +122,4 @@ export class VoiceRankService {
   }
 }
 
-export const voiceRankService = new VoiceRankService();
+export const voiceActivityService = new VoiceActivityService();

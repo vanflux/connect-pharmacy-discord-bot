@@ -1,10 +1,12 @@
-import { EmbedBuilder, Interaction, VoiceState } from "discord.js";
-import { discord } from "../clients/discord";
-import { configService } from "../services/config";
-import { voiceRankService } from "../services/voice-rank";
-import { calcPercentage } from "../utils/calc-percentage";
-import { handleExceptions } from "../utils/handle-exceptions";
-import { translateNumbersToEmojis } from "../utils/translate-numbers-to-emojis";
+import { AttachmentBuilder, EmbedBuilder, Interaction, VoiceState } from "discord.js";
+import { discord } from "../../clients/discord";
+import { configService } from "../../services/config";
+import { sprintService } from "../../services/sprint";
+import { voiceActivityService } from "../../services/voice-activity";
+import { calcPercentage } from "../../utils/calc-percentage";
+import { handleExceptions } from "../../utils/handle-exceptions";
+import { translateNumbersToEmojis } from "../../utils/translate-numbers-to-emojis";
+import { generateVoiceRankStatsImage } from "./stats";
 
 export class VoiceRankFeature {
   async initialize() {
@@ -19,7 +21,7 @@ export class VoiceRankFeature {
 
   private async handleAlreadyVoiceConnectedUsers() {
     const guildId = configService.get('discord.guildId');
-    const openActivities = await voiceRankService.getOpenActivities();
+    const openActivities = await voiceActivityService.getOpenActivities();
     const toClose = [...openActivities];
     if (guildId) {
       const guild = await discord.client.guilds.fetch(guildId);
@@ -35,14 +37,14 @@ export class VoiceRankFeature {
             toClose.splice(index, 1);
           } else {
             // The user is on channel and don't have open activity, open one
-            await voiceRankService.openActivity(userId, channelId, new Date());
+            await voiceActivityService.openActivity(userId, channelId, new Date());
           }
         });
       }));
     }
     // The user is not on channel and have open activity, close it
     await Promise.all(
-      toClose.map(activity => voiceRankService.closeActivity(activity.id, activity.startTime))
+      toClose.map(activity => voiceActivityService.closeActivity(activity.id, activity.startTime))
     );
   }
 
@@ -56,18 +58,18 @@ export class VoiceRankFeature {
     const userId = oldState.id;
 
     if (oldState.channelId) {
-      const activity = await voiceRankService.getOpenActivityOfUserOnChannel(userId, oldState.channelId);
+      const activity = await voiceActivityService.getOpenActivityOfUserOnChannel(userId, oldState.channelId);
       if (activity) {
         const date = new Date();
         console.log('[VoiceRankFeature] User', userId, 'exit channel', oldState.channelId, date);
-        await voiceRankService.closeActivity(activity.id, date);
+        await voiceActivityService.closeActivity(activity.id, date);
       }
     }
 
     if (newState.channelId) {
       const date = new Date();
       console.log('[VoiceRankFeature] User', userId, 'enter channel', newState.channelId, date);
-      await voiceRankService.openActivity(userId, newState.channelId, date);
+      await voiceActivityService.openActivity(userId, newState.channelId, date);
     }
   }
 
@@ -96,8 +98,8 @@ export class VoiceRankFeature {
             timeLabel = 'do último mês';
             break;
         }
-        const usersRank = await voiceRankService.getUserRank(startTime);
-        const allPoints = await voiceRankService.getAllPoints(startTime) || 0;
+        const usersRank = await voiceActivityService.getUserRank(startTime);
+        const allPoints = await voiceActivityService.getAllPoints(startTime) || 0;
         console.log('[VoiceRankFeature] Voice users rank:', usersRank);
         const embed = new EmbedBuilder();
         embed.setTitle(`Rank do Voice ${timeLabel} :loud_sound:`);
@@ -122,8 +124,8 @@ export class VoiceRankFeature {
         break;
       }
       case 'points': {
-        const points = await voiceRankService.getUserPoints(interaction.user.id) || 0;
-        const allPoints = await voiceRankService.getAllPoints() || 0;
+        const points = await voiceActivityService.getUserPoints(interaction.user.id) || 0;
+        const allPoints = await voiceActivityService.getAllPoints() || 0;
         console.log('[VoiceRankFeature] Voice user points of', interaction.user.id, ':', points);
         const embed = new EmbedBuilder();
         embed.setTitle('Seus Pontos do Voice :loud_sound:');
@@ -139,6 +141,20 @@ export class VoiceRankFeature {
         });
         await interaction.reply({ embeds: [embed] });
         break;
+      }
+      case 'stats': {
+        const sprintNum = interaction.options.getNumber('sprint');
+        if (sprintNum == null) return;
+        const sprint = await sprintService.getSprintByNum(sprintNum);
+        if (!sprint) return;
+        const buffer = await generateVoiceRankStatsImage(sprint);
+        const embed = new EmbedBuilder();
+        embed.setTitle(`Stats do Voice (Sprint ${sprintNum}) :loud_sound:`);
+        embed.setColor('#3959DB');
+        const fileName = `Voice_Stats.png`;
+        const attachment = new AttachmentBuilder(buffer, { name: fileName });
+        embed.setImage(`attachment://${fileName}`);
+        interaction.reply({ embeds: [embed], files: [ attachment ] });
       }
     }
   }
