@@ -63,6 +63,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.9.0': [
     'Feature de voice stats por sprint (imagem)'
+  ],
+  '2.9.1': [
+    'Fix em dockerfile para canvas'
   ]
 }
 
