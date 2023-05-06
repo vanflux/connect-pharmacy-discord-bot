@@ -15,6 +15,7 @@ COPY package.json .
 COPY yarn.lock .
 RUN yarn install --network-timeout 1000000 --frozen-lockfile --ignore-scripts --no-optional --no-cache && yarn cache clean
 COPY tsconfig.json .
+COPY assets/ assets/
 COPY src/ src/
 RUN yarn build
 ENV DATA_DIR=/data
