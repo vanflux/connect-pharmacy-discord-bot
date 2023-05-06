@@ -66,6 +66,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.9.1': [
     'Fix em dockerfile para canvas'
+  ],
+  '2.9.2': [
+    'Arial font asset adicionado'
   ]
 }
 

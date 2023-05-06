@@ -18,6 +18,7 @@ import { trelloFeature } from './features/trello';
 import { userService } from './services/user';
 import { usersFeature } from './features/users';
 import { sprintService } from './services/sprint';
+import { setupCanvas } from './utils/setup-canvas';
 
 // Handle some termination syscalls
 process.on('SIGTERM', () => process.exit());
@@ -27,6 +28,7 @@ process.on('SIGUSR2', () => process.exit());
 
 async function main() {
   console.log('[Main] Initializing');
+  setupCanvas();
   await secretService.initialize();
   await db.initialize();
   await configService.initialize();
