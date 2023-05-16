@@ -3,6 +3,7 @@ import { discord } from "../clients/discord";
 import { configService } from "../services/config";
 import { gitlabService } from "../services/gitlab";
 import { userService } from "../services/user";
+import { daysHoursDiff } from "../utils/date";
 import { handleExceptions } from "../utils/handle-exceptions";
 
 export class MrStatsFeature {
@@ -34,6 +35,7 @@ export class MrStatsFeature {
               const user = await userService.getUserByGitlabUsername(mr.author.username)
               return {
                 user,
+                createdAt: new Date(mr.created_at),
                 authorName: mr.author.name,
                 hasConflicts: mr.has_conflicts,
                 blockingDiscussionResolved: mr.blocking_discussions_resolved,
@@ -50,15 +52,18 @@ export class MrStatsFeature {
       await interaction.reply('Status dos merge requests:');
 
       const channel = interaction.channel as TextChannel;
+      const now = new Date();
       for (const mrStats of mrsStats) {
         const embed = new EmbedBuilder();
         embed.setTitle(`Merge requests de **${mrStats.projectName}**:`);
         embed.setColor('#3959DB');
         let description = '';
         for (const mr of mrStats.mergeRequests) {
+          const diff = daysHoursDiff(mr.createdAt, now);
+          const diffText = diff.days < 1 ? `${Math.floor(diff.hours)} hora${diff.hours > 2 ? 's' : ''}` : `${Math.floor(diff.days)} dia${diff.days > 2 ? 's' : ''}`;
           const userMention = mr.user?.discordUserId ? `<@${mr.user.discordUserId}>` : mr.authorName;
           const canReview = !mr.hasConflicts && mr.blockingDiscussionResolved;
-          description += `> **[Merge request](${mr.url})** ${canReview ? '⭐ Ages III e IV Revisem! ⭐' : `⛈ Arrume o MR ${userMention} ⛈`}\n`;
+          description += `> **[Merge request](${mr.url})** (**Há ${diffText}**) ${canReview ? '⭐ Ages III e IV Revisem! ⭐' : `⛈ Arrume o MR ${userMention} ⛈`}\n`;
           description += `**${mr.title}**\n`;
           description += `${mr.sourceBranch} -> ${mr.targetBranch} (${userMention})\n`;
           if (mr.hasConflicts) description += `❌ Tem conflitos para resolver! ❌\n`;

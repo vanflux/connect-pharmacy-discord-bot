@@ -72,6 +72,9 @@ const changeLog: { [version: string]: string[] } = {
   ],
   '2.9.3': [
     'Fix em dockerfile para assets'
+  ],
+  '2.10.0': [
+    'Dias e horas incluídos no status de merge requests'
   ]
 }
 
