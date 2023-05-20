@@ -534,6 +534,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/seedrandom@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/seedrandom/-/seedrandom-3.0.5.tgz#31fb257427742a9cc33fcf0c25dacca92e8f45a1"
+  integrity sha512-kopEpYpFQvQdYsZkZVwht/0THHmTFFYXDaqV/lM45eweJ8kcGVDgZHs0RVTolSq55UPZNmjhKc9r7UvLu/mQQg==
+
 "@types/serve-static@*":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@types/serve-static/-/serve-static-1.15.1.tgz#86b1753f0be4f9a1bee68d459fcda5be4ea52b5d"
@@ -4594,6 +4599,11 @@ sanitize-html@1.20.1:
     postcss "^7.0.5"
     srcset "^1.0.0"
     xtend "^4.0.1"
+
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 semver-diff@^3.1.1:
   version "3.1.1"
